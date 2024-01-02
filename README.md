@@ -1,9 +1,9 @@
 # Client_cashless_mobile_cordova
 
 ## cloner le projet
-https://github.com/TiBillet/client_cashless_mobile_cordova
+https://github.com/TiBillet/client-android-cashless-LaBoutik
 
-## Tester sur un appareil android dans "clinet_cashless_mobile_cordova/Docker"
+## Tester sur un appareil android dans "client-android-cashless-LaBoutik/Docker"
 - Lancer le conteneur "cordova_dev" et y accéder par une console.
 ```
 docker compose up -d
@@ -35,17 +35,17 @@ cordova build
 ```
 
 ## Configuration:
-Le fichier de configuration ".../client_cashless_mobile_cordova/mobile-app/www/config.json"  
+Le fichier de configuration ".../client-android-cashless-LaBoutik/mobile-app/www/config.json"  
 est charger puis sauvegarder une fois automatiquement dans le fichier ".../Documents/config.json" de votre mobile.   
 Vous gérez ensuite le changement de serveur et de nom de l'appareil en sauvegardant par l'appui du bouton "Enregistrer".   
-En supprimnt le cache de l'application le fichier ".../client_cashless_mobile_cordova/mobile-app/www/config.json"  
+En supprimnt le cache de l'application le fichier ".../client-android-cashless-LaBoutik/mobile-app/www/config.json"  
 sera pris en compte de nouveau.
 
 ## Infos, sécurité (Content Security Policy, tag 'meta' dans index.html)
 content:   
 - Gère les connexions = "connect-src" autorisées :     
   . localhost   
-  . https://filaos.re/api/connect   
+  . https://example.com/api/connect   
 
 - Gère les scriptes = "script-src" autorisés :
   . localhost
