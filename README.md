@@ -1,6 +1,6 @@
-# Client_cashless_mobile_cordova
+# Client android(cordova) cashless LaBoutik
 
-## cloner le projet
+## Cloner le projet
 https://github.com/TiBillet/client-android-cashless-LaBoutik
 
 ## Tester sur un appareil android dans "client-android-cashless-LaBoutik/Docker"
