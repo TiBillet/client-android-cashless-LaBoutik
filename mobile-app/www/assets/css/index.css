@@ -1,0 +1,129 @@
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+body {
+  -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+  -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+  -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+  background-color: #3b567f;
+  font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size:14px;
+  height:100vh;
+  margin:0px;
+  padding:0px;
+  /* Padding to avoid the "unsafe" areas behind notches in the screen */
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  width:100%;
+}
+
+#conteneur {
+  width: 100%;
+  height: calc(100% - 164px);
+}
+
+#affichage-alertes {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 4px;
+}
+
+#entree-des-donnees {
+  display: none;
+}
+
+#app-log {
+  display: none;
+  position: absolute;
+  width: calc( 100% - 8px);
+  height: 164px;
+  background-color: #FFFFFF;
+  color: #000000;
+  left: 4px;
+  bottom: 4px;
+  overflow-y: auto;
+}
+
+.BF-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.BF-ligne {
+  display: flex;
+  flex-direction: row;
+  /* axe ligne - x */
+  justify-content: center;
+  /* axe colonne - y */
+  align-items: center;
+}
+
+.BF-ligne-deb {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.ligne {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.info {
+  font-size: 18px;
+  color: #FFFFFF;
+}
+
+.entree {
+  width: 80%;
+  color: #000000;
+}
+
+.action {
+  display: none;
+  width: 30%;
+  height: 50px;
+  margin: 0 4px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #FFFFFF;
+}
+
+#valider {
+  background-color: #339448;
+}
+
+#sauver {
+  background-color: #05214c;
+}
+
+#modifier {
+  background-color: #b1060d;
+}
+
+#reset {
+  background-color: #103802;
+}
+
+.rouge {
+  border: 2px solid #bd1c2a;
+  height: 26px;
+  border-radius: 4px;
+}
+
+.ligne-alerte {
+  margin: 30px 0 8px 0;
+}
+
+.message-icon {
+  color: #FFFFFF;
+  font-size: 16px;
+}
