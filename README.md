@@ -1,7 +1,7 @@
 # Client android(cordova) cashless LaBoutik
 
 ## Cloner le projet
-https://github.com/TiBillet/client-android-cashless-LaBoutik
+git clone https://github.com/TiBillet/client-android-cashless-LaBoutik
 
 ## Tester sur un appareil android dans "client-android-cashless-LaBoutik/Docker"
 - Lancer le conteneur "cordova_dev" et y accéder par une console.
