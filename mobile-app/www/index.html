@@ -1,38 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="assets/css/index.css">
-    <title>Ti Billet</title>
-  </head>
-  <body>
-  <div id="affichage-alertes" class=" BF-col">
-    <img src="assets/images/logo.png" />
+<head>
+  <meta charset="utf-8">
+  <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="assets/css/index.css">
+  <title>Ti Billet</title>
+</head>
+<body>
+<div id="affichage-alertes" class=" BF-col">
+  <img src="assets/images/logo.png"/>
+</div>
+<div id="entree-des-donnees" class="conteneur BF-col">
+  <img src="assets/images/logo.png"/>
+  <div id="field-pin" class="ligne BF-col">
+    <div class="info" for="pin">Code pin :</div>
+    <input type="number" id="pin" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
   </div>
-    <div id="entree-des-donnees" class="conteneur BF-col">
-      <img src="assets/images/logo.png" />
-      <div class="ligne BF-col">
-        <div class="info" for="serveur">Serveur :</div>
-        <input type="text" id="serveur" class="entree" name="serveur" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
-      </div>
-      <div class="ligne BF-col">
-        <div class="info" for="nom">Nom de l'appareil:</div>
-        <input type="text" id="nom" class="entree" name="nom" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
-      </div>
-      <div class="ligne BF-ligne">
-        <input id="reset" class="action" type="button" value="Reset">
-        <input id="enregistrer" class="action" type="button" value="Enregistrer">
-        <input id="sauver" class="action" type="button" value="Sauver">
-        <input id="valider" class="action" type="button" value="Valider">
-      </div>
-    </div>
-    <div id="app-log"></div>
-    <script src="cordova.js"></script>
-    <script src="assets/js/index.js"></script>
-    </body>
+  <div id="field-url-server" class="ligne BF-col" style="display: none;">
+    <div class="info" for="url-server">Url server :</div>
+    <input type="text" id="url-server" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
+  </div>
+
+  <div id="field-proprio" class="ligne BF-col" style="display: none;">
+    <div class="info" for="proprio">Propriétaire de l'appareil:</div>
+    <input type="text" id="proprio" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
+  </div>
+  <div class="ligne BF-ligne">
+    <button id="valider" class="action" type="button">Valider</button>
+  </div>
+</div>
+<div id="app-log" style="padding: 4px;"></div>
+<script src="cordova.js"></script>
+<script src="assets/js/slugify.js"></script>
+<script src="assets/js/fernetBrowser.js"></script>
+<script src="assets/js/index.js"></script>
+</body>
 </html>
