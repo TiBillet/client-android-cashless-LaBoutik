@@ -13,24 +13,33 @@
 <body>
 <div id="affichage-alertes" class=" BF-col">
   <img src="assets/images/logo.png"/>
+  <!-- si wifi pas activé un message sera affiché -->
+  <!-- si nfc pas activé un message sera affiché -->
 </div>
 <div id="entree-des-donnees" class="conteneur BF-col">
   <img src="assets/images/logo.png"/>
-  <div id="field-pin" class="ligne BF-col">
-    <div class="info" for="pin">Code pin :</div>
-    <input type="number" id="pin" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
-  </div>
-  <div id="field-url-server" class="ligne BF-col" style="display: none;">
-    <div class="info" for="url-server">Url server :</div>
-    <input type="text" id="url-server" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
+
+  <!-- étape 1 - pas de configuration sauvegardée -->
+  <div id="step-1" class="conteneur BF-col">
+    <div id="field-pin" class="ligne BF-col">
+      <div class="info" for="pin">Code pin :</div>
+      <input type="number" id="pinCode" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
+    </div>
+    <div id="retour-pin-code" class="info-danger" ></div>
+    <div class="ligne BF-ligne">
+      <button class="action c-green" type="button" onclick="getUrlServerFromPinCode()">Valider</button>
+    </div>
   </div>
 
-  <div id="field-proprio" class="ligne BF-col" style="display: none;">
-    <div class="info" for="proprio">Propriétaire de l'appareil:</div>
-    <input type="text" id="proprio" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
-  </div>
-  <div class="ligne BF-ligne">
-    <button id="valider" class="action" type="button">Valider</button>
+  <!-- étape 2 - configuration sauvegardée, lancerl'application ou réentrer un pin code -->
+  <div id="step-2" class="conteneur BF-col" style="display: none;">
+    <div id="info-server" class="info" >Serveur cashless :</div>
+    <div class="ligne BF-ligne">
+      <button id="start-app" data-url-server="" class="action c-green" type="button" onclick="startApp()">Lancer l'application</button>
+    </div>
+    <div class="ligne BF-ligne mt-2r">
+      <button class="action c-blue" type="button" onclick="showStep1()">Modifier serveur</button>
+    </div>
   </div>
 </div>
 <div id="app-log" style="padding: 4px;"></div>

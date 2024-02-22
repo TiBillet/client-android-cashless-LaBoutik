@@ -1,6 +1,6 @@
 // https://github.com/csquared/fernet.js/tree/master
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
-let ip, basePath, saveFileName = 'config.json'
+let ip, basePath, saveFileName = 'configTest4.json', urlLogin = '/wv/login_hardware'
 let configuration = {
   mode_nfc: 'NFCMC',
   front_type: 'FMO',
@@ -10,36 +10,54 @@ let devicesStatus = [
   { name: 'network', status: 'off', method: 'networkTest' },
   { name: 'nfc', status: 'off', method: 'nfcTest' }
 ]
-let pinCodeLimit = 6, proprioLimit = 3, step = 1
+let pinCodeLimit = 6, proprioLimit = 3, step = 0
 
-const errorHandler = function (fileName, e) {
-  let msg = ''
-
-  switch (e.code) {
-    case FileError.QUOTA_EXCEEDED_ERR:
-      msg = 'Storage quota exceeded'
-      break
-    case FileError.NOT_FOUND_ERR:
-      msg = 'File not found'
-      break
-    case FileError.SECURITY_ERR:
-      msg = 'Security error'
-      break
-    case FileError.INVALID_MODIFICATION_ERR:
-      msg = 'Invalid modification'
-      break
-    case FileError.INVALID_STATE_ERR:
-      msg = 'Invalid state'
-      break
-    default:
-      msg = 'Unknown error'
-      break
-  }
-  console.log('Error (' + fileName + '): ' + msg)
-  afficherMessage(msg, 'danger')
+function showStep1() {
+  // effache interface step2
+  document.querySelector('#step-2').style.display = 'none'
+  // affiche interface step1
+  document.querySelector('#step-1').style.display = 'flex'
 }
 
-async function getUrlServerFromPinCode (pinCode) {
+async function startApp() {
+  const configFromFile = await readFromFile()
+  console.log('-> startApp, configFromFile =', configFromFile)
+  if (configFromFile === null) {
+    // pas de fichier de sauvegarde
+    const hostname = slugify(device.model + '-' + device.uuid)
+    configuration['hostname'] = hostname
+    configuration['password'] = await getSHA256Hash(hostname)
+    configuration['server'] = document.querySelector('#start-app').getAttribute('data-url-server')
+    configuration['uuidDevice'] = device.uuid
+    configuration['ip'] = ip
+    const retour = await writeToFile(configuration)
+    if (retour === true) {
+      window.location = configuration.server + urlLogin
+    } else {
+      afficherMessage(err.message, 'Erreur lors de sauvegarde de la configuration.')
+    }
+  } else {
+    console.log("-> J'ai un fichier de conf !")
+    const urlFromPinCode = document.querySelector('#start-app').getAttribute('data-url-server')
+    console.log('urlFromPinCode =', urlFromPinCode)
+    console.log('urlFromFile =', configFromFile.server)
+    if (urlFromPinCode !== configFromFile.server) {
+      configFromFile.server = urlFromPinCode
+      const retour = await writeToFile(configFromFile)
+      console.log("-> le serveur est différent, la sauvegarde de la conf =", retour)
+      if (retour === true) {
+        window.location = urlFromPinCode + urlLogin
+      } else {
+        afficherMessage(err.message, 'Erreur lors de sauvegarde de la configuration.')
+      }
+    } else {
+      window.location = configFromFile.server + urlLogin
+    }
+  }
+}
+async function getUrlServerFromPinCode() {
+  const pinCode = parseInt(document.querySelector('#pinCode').value)
+  console.log('pinCode =', pinCode)
   try {
     const response = await fetch(configuration.server_pin_code + '/pin_code', {
       method: 'POST',
@@ -50,18 +68,25 @@ async function getUrlServerFromPinCode (pinCode) {
     })
     const data = await response.json()
     if (response.status === 200) {
-      return data.url
+      // effache interface step1
+      document.querySelector('#step-1').style.display = 'none'
+      // affiche interface step2
+      document.querySelector('#step-2').style.display = 'flex'
+      // info
+      document.querySelector('#info-server').innerText = data.url
+      // data
+      document.querySelector('#start-app').setAttribute('data-url-server', data.url)
     } else {
       throw new Error('- No server from this pinCode -')
     }
   } catch (err) {
     console.log('-> getUrlServerFromPinCode, error :', err)
     afficherMessage(err.message, 'danger')
-    return null
+    document.querySelector('#retour-pin-code').innerText = err
   }
 }
 
-function inputStatusPinCode (evt, limit) {
+function inputStatusPinCode(evt, limit) {
   const element = evt.target
   if (element.value.length < limit || element.value.length > limit) {
     element.style.setProperty('border', '4px solid red', 'important')
@@ -70,72 +95,52 @@ function inputStatusPinCode (evt, limit) {
   }
 }
 
-function inputStatusProprio (evt, limit) {
-  const element = evt.target
-  if (element.value.length < limit) {
-    element.style.setProperty('border', '4px solid red', 'important')
-  } else {
-    element.style.setProperty('border', '2px solid gray', 'important')
-  }
-}
-
-function readFromFile () {
+async function readFromFile() {
   const pathToFile = basePath + saveFileName
-  console.log('-> readFromFile, pathToFile =', pathToFile)
-  window.resolveLocalFileSystemURL(pathToFile, function (fileEntry) {
+  // console.log('-> readFromFile, pathToFile =', pathToFile)
+
+  const promiseReadFromFile = new Promise((resolve) => {
+    window.resolveLocalFileSystemURL(pathToFile, function (fileEntry) {
       fileEntry.file(function (file) {
-        var reader = new FileReader()
-
+        const reader = new FileReader()
         reader.onloadend = function (e) {
-          // console.log('-> readFromFile, data =', JSON.parse(this.result))
-          configuration = JSON.parse(this.result)
-
-          // go cashless
-          window.location = configuration.server
+          resolve(JSON.parse(this.result))
         }
-
         reader.readAsText(file)
-      }, errorHandler.bind(null, saveFileName))
-    },
-    errorHandler.bind(null, saveFileName)
-  )
+      }, () => { resolve(null) })
+    }, () => { resolve(null) })
+  })
+
+  return await promiseReadFromFile
 }
 
-function writeToFile () {
-  console.log('-> writeToFile, saveFileName =', saveFileName, '  --  basePath =', basePath)
-  const data = JSON.stringify(configuration)
-  // console.log('data =', data)
-  window.resolveLocalFileSystemURL(basePath, function (directoryEntry) {
-      // for dev
-      window.test1 = directoryEntry
+async function writeToFile(rawData) {
+  // console.log('-> writeToFile, saveFileName =', saveFileName, '  --  basePath =', basePath)
+  const data = JSON.stringify(rawData)
+
+  const promiseWiteToFile = new Promise((resolve) => {
+    window.resolveLocalFileSystemURL(basePath, function (directoryEntry) {
       directoryEntry.getFile(saveFileName, { create: true },
         function (fileEntry) {
           fileEntry.createWriter(function (fileWriter) {
             fileWriter.onwriteend = function (e) {
-              // for real-world usage, you might consider passing a success callback
-              console.log('Write of file "' + saveFileName + '" completed.')
-              localStorage.setItem('laboutik', 'configurationSaveOk')
-              // go cashless
-              window.location = configuration.server
+              console.log('info , write of file "' + saveFileName + '" completed.')
+              resolve(true)
             }
-
             fileWriter.onerror = function (e) {
               // you could hook this up with our global error handler, or pass in an error callback
-              console.log('Write failed: ' + e.toString())
+              console.log('info, write failed: ' + e.toString())
             }
-
             const blob = new Blob([data], { type: 'text/plain' })
             fileWriter.write(blob)
-          }, errorHandler.bind(null, saveFileName))
-        },
-        errorHandler.bind(null, saveFileName)
-      )
-    },
-    errorHandler.bind(null, saveFileName)
-  )
+          }, () => { resolve(false) })
+        }, () => { resolve(false) })
+    }, () => { resolve(false) })
+  })
+  return await promiseWiteToFile
 }
 
-async function getSHA256Hash (input) {
+async function getSHA256Hash(input) {
   const textAsBuffer = new TextEncoder().encode(input)
   const hashBuffer = await window.crypto.subtle.digest('SHA-256', textAsBuffer)
   const hashArray = Array.from(new Uint8Array(hashBuffer))
@@ -145,38 +150,8 @@ async function getSHA256Hash (input) {
   return hash
 }
 
-async function validate () {
-  if (step === 2) {
-    const proprio = document.querySelector('#proprio').value
-    const urlServer = document.querySelector('#url-server').value
-    if (proprio.length >= proprioLimit && urlServer !== '') {
-      const hostname = slugify(proprio + '-' + device.model + '-' + device.uuid)
-      const password = await getSHA256Hash(hostname)
-      configuration['hostname'] = hostname
-      configuration['password'] = password
-      configuration['server'] = urlServer + '/wv/login_hardware'
-      configuration['uuidDevice'] = device.uuid
-      configuration['ip'] = ip
-      writeToFile()
-    }
-  }
-
-  if (step === 1) {
-    const pinCode = document.querySelector('#pin').value
-    if (pinCode.length === pinCodeLimit) {
-      const urlServer = await getUrlServerFromPinCode(parseInt(pinCode))
-      if (urlServer !== null) {
-        step = 2
-        document.querySelector('#field-pin').style.display = 'none'
-        document.querySelector('#field-url-server').style.display = 'flex'
-        document.querySelector('#field-proprio').style.display = 'flex'
-        document.querySelector('#url-server').value = urlServer
-      }
-    }
-  }
-}
-
-function afficherMessage (message, typeMessage) {
+// insert/affiche des messages dans l'élément #app-log
+function afficherMessage(message, typeMessage) {
   let styleMessage = `style="color:#000;"`
   if (typeMessage === 'danger') {
     styleMessage = `style="color:#F00;"`
@@ -184,10 +159,10 @@ function afficherMessage (message, typeMessage) {
   document.querySelector('#app-log').innerHTML += `<div ${styleMessage}>${message}</div>`
 }
 
-function nfcTest () {
+function nfcTest() {
   nfc.enabled(() => {
     afficherMessage('NFC activé !')
-    // message
+    // message nfc on
     const nfcDevice = new CustomEvent('msg_device', {
       detail: {
         name: 'nfc',
@@ -198,8 +173,8 @@ function nfcTest () {
     document.dispatchEvent(nfcDevice)
 
   }, (err) => {
-    // insérez l'icon pas de nfc + message,  viewBox="0 0 84.480003 49.919998
     console.log('ncf.enable,', err)
+    // insérez l'icon pas de nfc + message
     let frag = `
       <div  id="alert-nfc" class="ligne-alerte BF-col">
         <div class="message-icon">
@@ -220,12 +195,14 @@ function nfcTest () {
   })
 }
 
-function networkTest () {
+function networkTest() {
   // obtenir ip
   networkinterface.getWiFiIPAddress(function (ipInformation) {
     // console.log( "IP: " + ipInformation.ip + " subnet:" + ipInformation.subnet )
     ip = ipInformation.ip
+    // affiche l'ip
     afficherMessage('IP = ' + ip)
+    // message network on
     const netDevice = new CustomEvent('msg_device', {
       detail: {
         name: 'network',
@@ -236,6 +213,7 @@ function networkTest () {
   }, function (erreur) {
     afficherMessage(erreur, 'danger')
     ip = '987.987.987.987'
+    // pas de réseau (wifi, 4g, 5g)
     let frag = `
       <div id="alert-network" class="ligne-alerte BF-col">
         <div class="message-icon">
@@ -268,9 +246,9 @@ function networkTest () {
   })
 }
 
-function initApp () {
+function initApp() {
   // wait devices on
-  document.addEventListener('msg_device', (evt) => {
+  document.addEventListener('msg_device', async (evt) => {
     try {
       // { name: 'network', status: 'off', method: 'networkTest' },
       let searchDevice = devicesStatus.find(device => device.name === evt.detail.name)
@@ -287,34 +265,33 @@ function initApp () {
 
     // console.log('allDevicesOn =', allDevicesOn)
     if (allDevicesOn === true) {
-      const testWrite = localStorage.getItem('laboutik')
-      console.log('testWrite =', testWrite)
-      if (testWrite === 'configurationSaveOk') {
-        readFromFile()
-      }
-
-      // display interface
+      // efface le conteneur des alertes
       document.querySelector('#affichage-alertes').style.display = 'none'
-      document.querySelector('#entree-des-donnees').style.display = 'flex'
-      document.querySelector('#app-log').style.display = 'block'
-      document.querySelector('#valider').style.display = 'block'
 
-      // actions
-      document.querySelector('#valider').addEventListener('click', validate)
-      document.querySelector('#pin').addEventListener('keyup', (evt) => {
-        inputStatusPinCode(evt, pinCodeLimit)
-      })
-      document.querySelector('#proprio').addEventListener('keyup', (evt) => {
-        inputStatusProprio(evt, proprioLimit)
-      })
+      // affiche le conteneur d'informations
+      document.querySelector('#app-log').style.display = 'block'
+
+      // affiche l' interface principale
+      document.querySelector('#entree-des-donnees').style.display = 'flex'
+
+      const configFromFile = await readFromFile()
+      if (configFromFile !== null) {
+        // efface l'interface demandant le code pin
+        document.querySelector('#step-1').style.display = 'none'
+        // affiche l'interface de lancement de l'appliaction/modification serveur
+        document.querySelector('#step-2').style.display = 'flex'
+        // affiche le serveur en cours
+        document.querySelector('#info-server').innerText = configFromFile.server
+        // data
+        document.querySelector('#start-app').setAttribute('data-url-server', configFromFile.server)
+      }
     }
   })
 
-  // starts testing of devices
+  // start testing devices
   devicesStatus.forEach(device => {
     window[device.method]()
   })
-
 }
 
 document.addEventListener('deviceready', () => {
@@ -324,5 +301,4 @@ document.addEventListener('deviceready', () => {
   afficherMessage('Device = ' + device.uuid)
   console.log('device =', device)
   initApp()
-
 }, false)

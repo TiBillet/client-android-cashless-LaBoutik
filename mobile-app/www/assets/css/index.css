@@ -85,9 +85,8 @@ body {
 }
 
 .action {
-  display: none;
-  width: 30%;
-  height: 50px;
+  width: 180px;
+  height: 60px;
   margin: 0 4px;
   cursor: pointer;
   border: none;
@@ -97,26 +96,12 @@ body {
   color: #FFFFFF;
 }
 
-#valider {
+.c-green {
   background-color: #339448;
 }
 
-#sauver {
-  background-color: #05214c;
-}
-
-#modifier {
-  background-color: #b1060d;
-}
-
-#reset {
-  background-color: #103802;
-}
-
-.rouge {
-  border: 2px solid #bd1c2a;
-  height: 26px;
-  border-radius: 4px;
+.c-blue {
+  background-color: #0f53b9;
 }
 
 .ligne-alerte {
@@ -126,4 +111,13 @@ body {
 .message-icon {
   color: #FFFFFF;
   font-size: 16px;
+}
+
+.info-danger {
+  color: #ff0000;
+  font-size: 1rem;
+}
+
+.mt-2r {
+  margin-top: 2rem;
 }
