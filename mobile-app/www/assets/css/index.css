@@ -98,6 +98,10 @@ body {
   font-weight: bold;
   font-size: 18px;
   color: #FFFFFF;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .c-green {
@@ -137,7 +141,6 @@ body {
   width: 100vw;
   height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  background-color: #160101;
+  opacity: 0.9;
 }

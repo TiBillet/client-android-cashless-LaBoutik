@@ -26,15 +26,13 @@
       <div id="step-1" class="conteneur BF-col">
         <div id="field-pin" class="ligne BF-col">
           <div class="info" for="pin">Code pin :</div>
-          <input
-            type="number"
-            id="pinCode"
-            class="entree"
-            style="font-size: 1.2rem; background-color: #ffffff; color: black"
-          />
+          <input type="number" id="pinCode" class="entree" style="font-size: 1.2rem; background-color: #ffffff; color: black"/>
         </div>
         <div id="retour-pin-code" class="info-danger"></div>
         <div class="ligne BF-ligne">
+          <button id="step1-bt-annuler" class="action c-blue" type="button" onclick="showStep2()" style="display: none">
+            Annuler
+          </button>
           <button class="action c-green" type="button" onclick="getUrlServerFromPinCode()">
             Valider
           </button>
@@ -45,13 +43,7 @@
       <div id="step-2" class="conteneur BF-col" style="display: none">
         <div id="info-server" class="info">Serveur cashless :</div>
         <div class="ligne BF-ligne">
-          <button
-            id="start-app"
-            data-url-server=""
-            class="action c-green"
-            type="button"
-            onclick="startApp()"
-          >
+          <button id="start-app" data-url-server="" class="action c-green" type="button" onclick="startApp()">
             Lancer l'application
           </button>
         </div>
@@ -69,16 +61,15 @@
     </div>
     <div id="app-log" style="padding: 4px"></div>
     <!-- modal confirm -->
-    <div id="modal-confirm" style="display: none">
-      <div id="modal-confirm-infos" class="BF-col"></div>
-      <div class="BF-ligne">
+    <div id="modal-confirm" class="BF-col" style="display: none">
+      <div>
+        <div id="modal-confirm-infos" class="BF-col"></div>
+
         <div class="ligne BF-ligne mt-2r">
-          <button id="modal-confirm-annuler" class="action c-danger" type="button">
+          <button id="modal-confirm-annuler" class="action c-blue" type="button" onclick="hideModalConfirm()">
             Annuler
           </button>
-        </div>
-        <div class="ligne BF-ligne mt-2r">
-          <button id="modal-confirm-valider" class="action c-danger" type="button">
+          <button id="modal-confirm-valider" class="action c-green" type="button">
             Valider
           </button>
         </div>
