@@ -1,10 +1,11 @@
 // https://github.com/csquared/fernet.js/tree/master
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
-let ip, basePath, saveFileName = 'configTest4.json', urlLogin = '/wv/login_hardware'
+let ip, basePath, saveFileName = 'configT8.json', urlLogin = '/wv/login_hardware'
 let configuration = {
   mode_nfc: 'NFCMC',
   front_type: 'FMO',
-  server_pin_code: 'http://192.168.1.4:8087' //fake server
+  server_pin_code: 'http://192.168.1.4:8087',
+  server: []
 }
 let devicesStatus = [
   { name: 'network', status: 'off', method: 'networkTest' },
@@ -19,65 +20,127 @@ function showStep1() {
   document.querySelector('#step-1').style.display = 'flex'
 }
 
+function findDataServerFromCurrent(currentServer, configuration) {
+  return configuration.server.find(server => server.name === currentServer)
+}
+
+async function updateConfigurationFile() {
+  const hostname = slugify(device.model + '-' + device.uuid)
+  const urlServer = document.querySelector('#start-app').getAttribute('data-url-server')
+  configuration['hostname'] = hostname
+  const newServer = {
+    name: urlServer,
+    password: await getSHA256Hash(hostname + urlServer),
+    locale: document.querySelector('#start-app').getAttribute('data-local-server')
+  }
+  configuration['server'].push(newServer)
+  configuration['current_server'] = urlServer
+  configuration['uuidDevice'] = device.uuid
+  configuration['ip'] = ip
+  return await writeToFile(configuration)
+}
+
+window.confirmReset = function() {
+  const urlServer = document.querySelector('#start-app').getAttribute('data-url-server')
+  
+  document.querySelector('#modal-confirm-infos').innerHTML = `<div>Confirmer la suppression</div>
+  <div>de la configuration</div>
+  <div>du serveur ${urlServer}.</div>`
+  document.querySelector('#modal-confirm').style.display = 'block'
+}
+
+// supprime la configuration du serveur courant
+window.reset = async function () {
+  const urlServer = document.querySelector('#start-app').getAttribute('data-url-server')
+  console.log('urlServer courant =', urlServer)
+  console.log('0 -> configuration =', configuration)
+  const newServers = configuration.server.filter(server => server.name !== urlServer)
+  configuration.server = newServers
+  const retour = await writeToFile(configuration)
+  if (retour === true) {
+    afficherMessage(`Reset de l'url "${urlServer}" OK.`)
+  } else {
+    afficherMessage(`Erreur, lors du reset de l'url "${urlServer}".`, 'danger')
+  }
+}
+
 async function startApp() {
   const configFromFile = await readFromFile()
   console.log('-> startApp, configFromFile =', configFromFile)
+  // pas de fichier de sauvegarde
   if (configFromFile === null) {
-    // pas de fichier de sauvegarde
-    const hostname = slugify(device.model + '-' + device.uuid)
-    configuration['hostname'] = hostname
-    configuration['password'] = await getSHA256Hash(hostname)
-    configuration['server'] = document.querySelector('#start-app').getAttribute('data-url-server')
-    configuration['uuidDevice'] = device.uuid
-    configuration['ip'] = ip
-    const retour = await writeToFile(configuration)
+    const retour = await updateConfigurationFile()
     if (retour === true) {
-      window.location = configuration.server + urlLogin
+      const server = findDataServerFromCurrent(configuration.current_server, configuration)
+      window.location = server.name + urlLogin
     } else {
       afficherMessage(err.message, 'Erreur lors de sauvegarde de la configuration.')
     }
   } else {
+    // fichier de sauvegarde présent
     console.log("-> J'ai un fichier de conf !")
     const urlFromPinCode = document.querySelector('#start-app').getAttribute('data-url-server')
+    const localeFromPinCode = document.querySelector('#start-app').getAttribute('data-local-server')
     console.log('urlFromPinCode =', urlFromPinCode)
-    console.log('urlFromFile =', configFromFile.server)
-    if (urlFromPinCode !== configFromFile.server) {
-      configFromFile.server = urlFromPinCode
-      const retour = await writeToFile(configFromFile)
-      console.log("-> le serveur est différent, la sauvegarde de la conf =", retour)
-      if (retour === true) {
-        window.location = urlFromPinCode + urlLogin
-      } else {
-        afficherMessage(err.message, 'Erreur lors de sauvegarde de la configuration.')
-      }
+
+    // pas de changement dans la configuration 
+    if (urlFromPinCode === configFromFile.current_server) {
+      window.location = configFromFile.current_server + urlLogin
     } else {
-      window.location = configFromFile.server + urlLogin
+      // --- changement dans la configuration ---
+      console.log('-> Changement dans la configuration.');
+      const dataServer = findDataServerFromCurrent(urlFromPinCode, configFromFile)
+      console.log('dataServer =', dataServer)
+      if (dataServer === undefined) {
+        // serveur inconnu, sauvegarder
+        const retour = await updateConfigurationFile()
+        if (retour === true) {
+          const server = findDataServerFromCurrent(urlFromPinCode, configuration)
+          window.location = server.name + urlLogin
+        } else {
+          afficherMessage(err.message, 'Erreur lors de sauvegarde de la configuration.')
+        }
+      } else {
+        // serveur connu et enregistré
+        window.location = dataServer.name + urlLogin
+        configuration.current_server = document.querySelector('#start-app').getAttribute('data-url-server')
+        const retour = await writeToFile(configuration)
+        if (retour === true) {
+          const server = findDataServerFromCurrent(urlFromPinCode, configuration)
+          window.location = server.name + urlLogin
+        } else {
+          afficherMessage(err.message, 'Erreur lors de sauvegarde de la configuration.')
+        }
+      }
     }
   }
 }
 async function getUrlServerFromPinCode() {
   const pinCode = parseInt(document.querySelector('#pinCode').value)
-  console.log('pinCode =', pinCode)
+  // console.log('pinCode =', pinCode)
   try {
     const response = await fetch(configuration.server_pin_code + '/pin_code', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ pinCode })
+      body: JSON.stringify({ pin_code_validator: pinCode })
     })
-    const data = await response.json()
+    const retour = await response.json()
+    // console.log('-> getUrlServerFromPinCode, retour =', retour)
     if (response.status === 200) {
       // effache interface step1
       document.querySelector('#step-1').style.display = 'none'
       // affiche interface step2
       document.querySelector('#step-2').style.display = 'flex'
       // info
-      document.querySelector('#info-server').innerText = data.url
-      // data
-      document.querySelector('#start-app').setAttribute('data-url-server', data.url)
+      document.querySelector('#info-server').innerText = retour.server_url
+      // seveur
+      document.querySelector('#start-app').setAttribute('data-url-server', retour.server_url)
+      // local
+      document.querySelector('#start-app').setAttribute('data-local-server', retour.locale)
     } else {
-      throw new Error('- No server from this pinCode -')
+      throw new Error('No server from this pinCode')
     }
   } catch (err) {
     console.log('-> getUrlServerFromPinCode, error :', err)
@@ -150,7 +213,12 @@ async function getSHA256Hash(input) {
   return hash
 }
 
-// insert/affiche des messages dans l'élément #app-log
+/**
+ * insert/affiche des messages dans l'élément #app-log
+ * 
+ * @param {string} message - votre message
+ * @param {string} typeMessage - '' ou 'danger'
+ */
 function afficherMessage(message, typeMessage) {
   let styleMessage = `style="color:#000;"`
   if (typeMessage === 'danger') {
@@ -275,15 +343,22 @@ function initApp() {
       document.querySelector('#entree-des-donnees').style.display = 'flex'
 
       const configFromFile = await readFromFile()
+      console.log('init, configFromFile =', configFromFile)
+      // fichier de configuration présent
       if (configFromFile !== null) {
+        configuration = configFromFile
+        const dataServer = findDataServerFromCurrent(configFromFile.current_server, configFromFile)
+
         // efface l'interface demandant le code pin
         document.querySelector('#step-1').style.display = 'none'
         // affiche l'interface de lancement de l'appliaction/modification serveur
         document.querySelector('#step-2').style.display = 'flex'
         // affiche le serveur en cours
-        document.querySelector('#info-server').innerText = configFromFile.server
-        // data
-        document.querySelector('#start-app').setAttribute('data-url-server', configFromFile.server)
+        document.querySelector('#info-server').innerText = dataServer.name
+        // data serveur
+        document.querySelector('#start-app').setAttribute('data-url-server', dataServer.name)
+        // data local
+        document.querySelector('#start-app').setAttribute('data-local-server', dataServer.locale)
       }
     }
   })

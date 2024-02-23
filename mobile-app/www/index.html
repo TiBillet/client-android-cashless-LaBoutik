@@ -1,51 +1,92 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
-  <meta name="format-detection" content="telephone=no">
-  <meta name="msapplication-tap-highlight" content="no">
-  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-  <meta name="color-scheme" content="light dark">
-  <link rel="stylesheet" href="assets/css/index.css">
-  <title>Ti Billet</title>
-</head>
-<body>
-<div id="affichage-alertes" class=" BF-col">
-  <img src="assets/images/logo.png"/>
-  <!-- si wifi pas activé un message sera affiché -->
-  <!-- si nfc pas activé un message sera affiché -->
-</div>
-<div id="entree-des-donnees" class="conteneur BF-col">
-  <img src="assets/images/logo.png"/>
+  <head>
+    <meta charset="utf-8" />
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, width=device-width, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="stylesheet" href="assets/css/index.css" />
+    <title>Ti Billet</title>
+  </head>
+  <body>
+    <div id="affichage-alertes" class="BF-col">
+      <img src="assets/images/logo.png" />
+      <!-- si wifi pas activé un message sera affiché -->
+      <!-- si nfc pas activé un message sera affiché -->
+    </div>
+    <div id="entree-des-donnees" class="conteneur BF-col">
+      <img src="assets/images/logo.png" />
 
-  <!-- étape 1 - pas de configuration sauvegardée -->
-  <div id="step-1" class="conteneur BF-col">
-    <div id="field-pin" class="ligne BF-col">
-      <div class="info" for="pin">Code pin :</div>
-      <input type="number" id="pinCode" class="entree" style="font-size: 1.2rem;background-color: #FFFFFF; color: black;">
-    </div>
-    <div id="retour-pin-code" class="info-danger" ></div>
-    <div class="ligne BF-ligne">
-      <button class="action c-green" type="button" onclick="getUrlServerFromPinCode()">Valider</button>
-    </div>
-  </div>
+      <!-- étape 1 - pas de configuration sauvegardée -->
+      <div id="step-1" class="conteneur BF-col">
+        <div id="field-pin" class="ligne BF-col">
+          <div class="info" for="pin">Code pin :</div>
+          <input
+            type="number"
+            id="pinCode"
+            class="entree"
+            style="font-size: 1.2rem; background-color: #ffffff; color: black"
+          />
+        </div>
+        <div id="retour-pin-code" class="info-danger"></div>
+        <div class="ligne BF-ligne">
+          <button class="action c-green" type="button" onclick="getUrlServerFromPinCode()">
+            Valider
+          </button>
+        </div>
+      </div>
 
-  <!-- étape 2 - configuration sauvegardée, lancerl'application ou réentrer un pin code -->
-  <div id="step-2" class="conteneur BF-col" style="display: none;">
-    <div id="info-server" class="info" >Serveur cashless :</div>
-    <div class="ligne BF-ligne">
-      <button id="start-app" data-url-server="" class="action c-green" type="button" onclick="startApp()">Lancer l'application</button>
+      <!-- étape 2 - configuration sauvegardée, lancerl'application ou réentrer un pin code -->
+      <div id="step-2" class="conteneur BF-col" style="display: none">
+        <div id="info-server" class="info">Serveur cashless :</div>
+        <div class="ligne BF-ligne">
+          <button
+            id="start-app"
+            data-url-server=""
+            class="action c-green"
+            type="button"
+            onclick="startApp()"
+          >
+            Lancer l'application
+          </button>
+        </div>
+        <div class="ligne BF-ligne mt-2r">
+          <button class="action c-blue" type="button" onclick="showStep1()">
+            Modifier serveur
+          </button>
+        </div>
+        <div class="ligne BF-ligne mt-2r">
+          <button class="action c-danger" type="button" onclick="confirmReset()">
+            Reset
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="ligne BF-ligne mt-2r">
-      <button class="action c-blue" type="button" onclick="showStep1()">Modifier serveur</button>
+    <div id="app-log" style="padding: 4px"></div>
+    <!-- modal confirm -->
+    <div id="modal-confirm" style="display: none">
+      <div id="modal-confirm-infos" class="BF-col"></div>
+      <div class="BF-ligne">
+        <div class="ligne BF-ligne mt-2r">
+          <button id="modal-confirm-annuler" class="action c-danger" type="button">
+            Annuler
+          </button>
+        </div>
+        <div class="ligne BF-ligne mt-2r">
+          <button id="modal-confirm-valider" class="action c-danger" type="button">
+            Valider
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-<div id="app-log" style="padding: 4px;"></div>
-<script src="cordova.js"></script>
-<script src="assets/js/slugify.js"></script>
-<script src="assets/js/fernetBrowser.js"></script>
-<script src="assets/js/index.js"></script>
-</body>
+    <script src="cordova.js"></script>
+    <script src="assets/js/slugify.js"></script>
+    <script src="assets/js/fernetBrowser.js"></script>
+    <script src="assets/js/index.js"></script>
+  </body>
 </html>
