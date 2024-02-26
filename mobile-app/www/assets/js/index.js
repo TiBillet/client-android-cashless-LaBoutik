@@ -1,18 +1,15 @@
 // https://github.com/csquared/fernet.js/tree/master
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
-let ip, basePath, saveFileName = 'configTe2.json', urlLogin = '/wv/login_hardware'
-let configuration = {
-  mode_nfc: 'NFCMC',
-  front_type: 'FMO',
-  server_pin_code: 'http://192.168.1.4:8087',
-  server: [],
-  current_server: ''
-}
+import { env } from '../../env.js'
+
+let ip, basePath, saveFileName = 'configDevT1.json', urlLogin = '/wv/login_hardware'
+let configuration = env
 let devicesStatus = [
   { name: 'network', status: 'off', method: 'networkTest' },
   { name: 'nfc', status: 'off', method: 'nfcTest' }
 ]
 let pinCodeLimit = 6, proprioLimit = 3, step = 0
+
 
 async function readFromFile() {
   const pathToFile = basePath + saveFileName
@@ -74,7 +71,7 @@ async function getSHA256Hash(input) {
   return hash
 }
 
-function showStep1() {
+window.showStep1 = function () {
   // effache interface step2
   document.querySelector('#step-2').style.display = 'none'
   // affiche interface step1
@@ -83,12 +80,25 @@ function showStep1() {
   document.querySelector('#retour-pin-code').innerText = ''
 }
 
-function showStep2() {
+window.showStep2 = function () {
   // effache interface step1
   document.querySelector('#step-1').style.display = 'none'
   // affiche interface step2
   document.querySelector('#step-2').style.display = 'flex'
 }
+window.hideModalConfirm = function () {
+  document.querySelector('#modal-confirm').style.display = 'none'
+}
+
+window.confirmReset = function () {
+  const urlServer = document.querySelector('#start-app').getAttribute('data-url-server')
+  document.querySelector('#modal-confirm-infos').innerHTML = `<div>Confirmer la suppression</div>
+  <div>de la configuration</div>
+  <div>du serveur ${urlServer}.</div>`
+  document.querySelector('#modal-confirm-valider').setAttribute('onclick', 'reset(); hideModalConfirm()')
+  document.querySelector('#modal-confirm').style.display = 'flex'
+}
+
 
 /**
  * Find specific server in configuration
@@ -97,6 +107,9 @@ function showStep2() {
  * @returns {undefined|object}
  */
 function findDataServerFromConfiguration(urlServer, configuration) {
+  if (urlServer === undefined) {
+    return undefined
+  }
   return configuration.server.find(server => server.name === urlServer)
 }
 
@@ -111,38 +124,28 @@ async function saveServerInConfigurationFile(urlFromPinCode, localeFromPinCode) 
   return await writeToFile(configuration)
 }
 
-async function majCurrentServer(urlFromPinCode){
+async function majCurrentServer(urlFromPinCode) {
   configuration.current_server = urlFromPinCode
   return await writeToFile(configuration)
 }
 
-function hideModalConfirm() {
-  document.querySelector('#modal-confirm').style.display = 'none'
-}
-
-function confirmReset() {
-  const urlServer = document.querySelector('#start-app').getAttribute('data-url-server')
-  document.querySelector('#modal-confirm-infos').innerHTML = `<div>Confirmer la suppression</div>
-  <div>de la configuration</div>
-  <div>du serveur ${urlServer}.</div>`
-  document.querySelector('#modal-confirm-valider').setAttribute('onclick', 'reset(); hideModalConfirm(); showStep1();')
-  document.querySelector('#modal-confirm').style.display = 'flex'
-}
-
 // supprime la configuration du serveur courant
-async function reset() {
+window.reset = async function () {
   const urlServer = document.querySelector('#start-app').getAttribute('data-url-server')
+  // supprime le serveur courrant
   const newServers = configuration.server.filter(server => server.name !== urlServer)
   configuration.server = newServers
+  configuration.current_server = ''
   const retour = await writeToFile(configuration)
   if (retour === true) {
     afficherMessage(`Sauvegarde du serveur "${urlServer}" supprimé.`)
   } else {
     afficherMessage(`Erreur, lors du reset de l'url "${urlServer}".`, 'danger')
   }
+  showStep1()
 }
 
-async function startApp() {
+window.startApp =async function () {
   console.log('-> startApp, configuration =', configuration)
 
   // fichier de sauvegarde présent
@@ -182,7 +185,7 @@ async function startApp() {
 }
 
 // get pin code from "server pinCode"
-async function getUrlServerFromPinCode() {
+window.getUrlServerFromPinCode = async function () {
   const valueElement = document.querySelector('#pinCode').value
   if (valueElement !== '') {
     const pinCode = parseInt(valueElement)
@@ -246,7 +249,7 @@ function afficherMessage(message, typeMessage) {
   document.querySelector('#app-log').innerHTML += `<div ${styleMessage}>${message}</div>`
 }
 
-function nfcTest() {
+window.nfcTest = function () {
   nfc.enabled(() => {
     afficherMessage('NFC activé !')
     // message nfc on
@@ -282,7 +285,7 @@ function nfcTest() {
   })
 }
 
-function networkTest() {
+window.networkTest = function () {
   // obtenir ip
   networkinterface.getWiFiIPAddress(function (ipInformation) {
     // console.log( "IP: " + ipInformation.ip + " subnet:" + ipInformation.subnet )
@@ -380,10 +383,11 @@ function initApp() {
       if (configuration.current_server !== '') {
         // affichage du bouton annuler de l'interface #step-1 pour une future utilisation
         document.querySelector('#step1-bt-annuler').style.display = 'flex'
+      }
 
-        const dataServer = findDataServerFromConfiguration(configuration.current_server, configuration)
-        console.log('dataServer =', dataServer)
-
+      const dataServer = findDataServerFromConfiguration(configuration.current_server, configuration)
+      // console.log('dataServer =', dataServer)
+      if (dataServer !== undefined) {
         // affiche le serveur en cours
         document.querySelector('#info-server').innerText = dataServer.name
         // data serveur
@@ -399,8 +403,8 @@ function initApp() {
   })
 
   // start testing devices
-  devicesStatus.forEach(device => {
-    window[device.method]()
+  devicesStatus.forEach(item => {
+    window[item.method.toString()]()
   })
 }
 
