@@ -54,7 +54,7 @@ cordova build
 - La modification du serveur est identique au "Premier lancement"
 
 ### Reset
-Le bouton "Reset" permet de supprimer le serveur en cours (url affichée) et   
+Le bouton "Reset" permet de supprimer(mot de passe,...) le serveur en cours (url affichée), et   
 vous demande de rentrer un nouveau code pin.
 
 ### Attention pour sauvegarder un serveur il faut lancer une fois l'application avec l'url en cours.

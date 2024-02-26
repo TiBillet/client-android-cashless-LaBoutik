@@ -2,7 +2,7 @@
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
 import { env } from '../../env.js'
 
-let ip, basePath, saveFileName = 'configDevT1.json', urlLogin = '/wv/login_hardware'
+let ip, basePath, saveFileName = 'configLaboutik.json', urlLogin = '/wv/login_hardware'
 let configuration = env
 let devicesStatus = [
   { name: 'network', status: 'off', method: 'networkTest' },
@@ -110,7 +110,7 @@ function findDataServerFromConfiguration(urlServer, configuration) {
   if (urlServer === undefined) {
     return undefined
   }
-  return configuration.server.find(server => server.name === urlServer)
+  return configuration.servers.find(server => server.name === urlServer)
 }
 
 async function saveServerInConfigurationFile(urlFromPinCode, localeFromPinCode) {
@@ -119,7 +119,7 @@ async function saveServerInConfigurationFile(urlFromPinCode, localeFromPinCode) 
     password: await getSHA256Hash(configuration.hostname + urlFromPinCode),
     locale: localeFromPinCode
   }
-  configuration.server.push(newServer)
+  configuration.servers.push(newServer)
   configuration.current_server = urlFromPinCode
   return await writeToFile(configuration)
 }
@@ -133,8 +133,8 @@ async function majCurrentServer(urlFromPinCode) {
 window.reset = async function () {
   const urlServer = document.querySelector('#start-app').getAttribute('data-url-server')
   // supprime le serveur courrant
-  const newServers = configuration.server.filter(server => server.name !== urlServer)
-  configuration.server = newServers
+  const newServers = configuration.servers.filter(server => server.name !== urlServer)
+  configuration.servers = newServers
   configuration.current_server = ''
   const retour = await writeToFile(configuration)
   if (retour === true) {
@@ -413,6 +413,6 @@ document.addEventListener('deviceready', () => {
   // console.log('basePath =', basePath)
   afficherMessage('android = ' + device.version)
   afficherMessage('Device = ' + device.uuid)
-  // console.log('device =', device)
+  console.log('device =', device)
   initApp()
 }, false)
