@@ -4,6 +4,8 @@
 ```
 git clone https://github.com/TiBillet/client-android-cashless-LaBoutik
 ```
+## configuration:
+- Modifier la variable "server_pin_code" du fichier ".../client-android-cashless-LaBoutik/mobile-app/www/env.js" en fonction de votre serveur.
 
 ## Tester sur un appareil android dans "client-android-cashless-LaBoutik/Docker"
 - Mettre votre mobile en mode développeur
@@ -42,12 +44,17 @@ adb devices
 ```
 cordova build
 ```
+## Utilisation
 
-## Supprimer une configuration:
+### Premier lancement
+- Entrer le code pin de votre serveur et cliquer sur "Valider".
+- Cliquer sur "Lancer l'application" (L'url du serveur est sauvegardée pour la prochaine utilisation.)
 
-### Android 11:
-- Paramètres / Applis et notifications / Tibillet/LaBoutik / Espace de stockage et cache / vider l'sepace de stockage
+### Modifier le serveur
+- La modification du serveur est identique au "Premier lancement"
 
-### Android 9:
-- Paramètres / Applications / Tibillet/LaBoutik  / Stockage / Supprimer les données
-- 
+### Reset
+Le bouton "Reset" permet de supprimer le serveur en cours (url affichée) et   
+vous demande de rentrer un nouveau code pin.
+
+### Attention pour sauvegarder un serveur il faut lancer une fois l'application avec l'url en cours.
