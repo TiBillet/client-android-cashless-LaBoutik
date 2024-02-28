@@ -43,7 +43,6 @@ adb devices
 - Obtenir l'apk   
 ```
 cordova build
-cordova build android --release -- --packageType=apk
 ```
 ## Utilisation
 
