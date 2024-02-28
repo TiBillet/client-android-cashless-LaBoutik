@@ -43,18 +43,17 @@ adb devices
 - Obtenir l'apk   
 ```
 cordova build
+cordova build android --release -- --packageType=apk
 ```
 ## Utilisation
 
 ### Premier lancement
-- Entrer le code pin de votre serveur et cliquer sur "Valider".
-- Cliquer sur "Lancer l'application" (L'url du serveur est sauvegardée pour la prochaine utilisation.)
+- Entrer le code pin de votre serveur et cliquer sur "Valider" (Les données du serveur sont sauvegardées pour la prochaine utilisation).
+- Cliquer sur "Lancer l'application".
 
 ### Modifier le serveur
 - La modification du serveur est identique au "Premier lancement"
 
 ### Reset
-Le bouton "Reset" permet de supprimer(mot de passe,...) le serveur en cours (url affichée), et   
+Le bouton "Reset" permet de supprimer de la configuration le serveur en cours (url affichée), et   
 vous demande de rentrer un nouveau code pin.
-
-### Attention pour sauvegarder un serveur il faut lancer une fois l'application avec l'url en cours.
