@@ -147,12 +147,13 @@ window.startApp = async function () {
  * @param {object} retour 
  * @returns {boolean}
  */
-async function updateConfigurationFile(retour) {
+async function updateConfigurationFile(retour, pinCode) {
   console.log('-> updateConfigurationFile, configuration =', configuration)
   const hostname = slugify(device.model + '-' + device.uuid)
   configuration['hostname'] = hostname
   configuration['uuidDevice'] = device.uuid
   configuration['ip'] = ip
+  configuration['pin_code'] = pinCode
 
   // serveur inéxistant dans le fichier de conf, ajouter le
   const testServerIn = findDataServerFromConfiguration(retour.server_url, configuration)
@@ -194,7 +195,7 @@ window.getUrlServerFromPinCode = async function () {
       const retour = await response.json()
       // console.log('-> getUrlServerFromPinCode, retour =', retour)
       if (response.status === 200) {
-        const retourUpdate = await updateConfigurationFile(retour)
+        const retourUpdate = await updateConfigurationFile(retour, pinCode)
         // console.log('retourUpdate =', retourUpdate)
         if (retourUpdate !== true) {
           afficherMessage('Erreur lors de mise à jour de la configuration.', 'danger')
