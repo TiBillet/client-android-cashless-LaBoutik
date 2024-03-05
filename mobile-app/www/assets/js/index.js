@@ -150,7 +150,7 @@ window.startApp = async function () {
  */
 async function updateConfigurationFile(retour, pinCode) {
   console.log('-> updateConfigurationFile, configuration =', configuration)
-  const hostname = slugify(device.model + '-' + device.uuid)
+  const hostname = slugify(device.model + '-' + device.uuid + window.crypto.randomUUID())
   configuration['hostname'] = hostname
   configuration['uuidDevice'] = device.uuid
   configuration['ip'] = ip
