@@ -10,6 +10,17 @@ let devicesStatus = [
 ]
 let pinCodeLimit = 6, proprioLimit = 3, step = 0
 
+function generatePassword(length) {
+  const chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  let password = ""
+  const array = new Uint32Array(length)
+  window.crypto.getRandomValues(array)
+  for (let i = 0; i < length; i++) {
+    password += chars[array[i] % chars.length] // % operator returns remainder of division
+  }
+  return password
+}
+
 async function readFromFile() {
   const pathToFile = basePath + saveFileName
   // console.log('-> readFromFile, pathToFile =', pathToFile)
@@ -58,16 +69,6 @@ async function writeToFile(rawData) {
     }, () => { resolve(false) })
   })
   return await promiseWiteToFile
-}
-
-async function getSHA256Hash(input) {
-  const textAsBuffer = new TextEncoder().encode(input)
-  const hashBuffer = await window.crypto.subtle.digest('SHA-256', textAsBuffer)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hash = hashArray
-    .map((item) => item.toString(16).padStart(2, '0'))
-    .join('')
-  return hash
 }
 
 window.showStep1 = function () {
@@ -161,7 +162,7 @@ async function updateConfigurationFile(retour, pinCode) {
   if (testServerIn === undefined) {
     const newServer = {
       server: retour.server_url,
-      password: await getSHA256Hash(configuration.hostname + retour.server_url),
+      password: generatePassword(30),
       locale: retour.locale,
       publicKeyPem: retour.server_public_pem
     }
