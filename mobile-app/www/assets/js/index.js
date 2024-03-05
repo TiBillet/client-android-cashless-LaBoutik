@@ -2,7 +2,7 @@
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
 import { env } from '../../env.js'
 
-let ip, basePath, saveFileName = 'configLaboutik.json', urlLogin = '/wv/login_hardware'
+let ip, basePath, saveFileName = 'configLaboutik.json', urlLogin = 'wv/login_hardware'
 let configuration = env
 let devicesStatus = [
   { name: 'network', status: 'off', method: 'networkTest' },
