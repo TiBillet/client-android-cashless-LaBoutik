@@ -135,6 +135,7 @@ window.reset = async function () {
   }
   showStep1()
 }
+
 /**
  * Launches the app
  */
