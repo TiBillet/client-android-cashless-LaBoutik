@@ -5,45 +5,31 @@ RUN apt-get update \
     && apt-get install ca-certificates curl gnupg wget unzip sudo nano iputils-ping gcc g++ make apt-transport-https -yq
 
 # java
-RUN apt-get install openjdk-18-jdk-headless -yq
+RUN apt-get install openjdk-11-jdk-headless -yq
 
-ENV JAVA_HOME /usr/lib/jvm/java-18-openjdk-amd64
+ARG GRADLE_VERSION=7.6.3
+ARG ANDROID_CMDTOOLS_VERSION=9477386
 
-# gradle, ant et maven
-RUN wget -c https://services.gradle.org/distributions/gradle-7.6.2-bin.zip -P /tmp \
-    && unzip -d /opt/gradle /tmp/gradle-7.6.2-bin.zip \
-    && apt-get install -y maven ant -yq
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+ENV GRADLE_USER_HOME /opt/gradle
+ENV ANDROID_SDK_ROOT /usr/local/android-sdk-linux
+ENV ANDROID_HOME $ANDROID_SDK_ROOT
+ENV PATH $PATH:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$GRADLE_USER_HOME/bin
 
-ENV ANDROID_SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip" \
-    ANDROID_BUILD_TOOLS_VERSION=33.0.2 \
-    ANT_HOME="/usr/share/ant" \
-    MAVEN_HOME="/usr/share/maven" \
-    GRADLE_HOME="/opt/gradle/gradle-7.6.2" \
-    ANDROID_SDK_ROOT="/opt/android" \
-    ANDROID_HOME="/opt/android/"
+# Gradle
+RUN curl -so /tmp/gradle-${GRADLE_VERSION}-bin.zip https://downloads.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip && \
+    unzip -qd /opt /tmp/gradle-${GRADLE_VERSION}-bin.zip && \
+    ln -s /opt/gradle-${GRADLE_VERSION} /opt/gradle
 
-ENV PATH $PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$ANT_HOME/bin:$MAVEN_HOME/bin:$GRADLE_HOME/bin
 
-# Installs Android SDK
-WORKDIR /opt
+# Android
+RUN curl -so /tmp/commandlinetools-linux-${ANDROID_CMDTOOLS_VERSION}_latest.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMDTOOLS_VERSION}_latest.zip && \
+    mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/ && \
+    unzip -qd $ANDROID_SDK_ROOT/cmdline-tools/ /tmp/commandlinetools-linux-${ANDROID_CMDTOOLS_VERSION}_latest.zip && \
+    mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
 
-RUN mkdir android && cd android && \
-    wget -O tools.zip ${ANDROID_SDK_URL} && \
-    unzip tools.zip && rm tools.zip && \
-    cd cmdline-tools && \
-    mkdir latest && \
-    ls | grep -v latest | xargs mv -t latest
-
-RUN mkdir /root/.android && touch /root/.android/repositories.cfg && \
-    while true; do echo 'y'; sleep 2; done | sdkmanager "platform-tools" "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" && \
-    while true; do echo 'y'; sleep 2; done | sdkmanager "platforms;android-33" && \
-    while true; do echo 'y'; sleep 2; done | sdkmanager "extras;android;m2repository" "extras;google;google_play_services" "extras;google;instantapps" "extras;google;m2repository" &&  \
-    while true; do echo 'y'; sleep 2; done | sdkmanager "add-ons;addon-google_apis-google-22" "add-ons;addon-google_apis-google-23" "add-ons;addon-google_apis-google-24" "skiaparser;1" "skiaparser;2" "skiaparser;3"
-
-RUN chmod a+x -R $ANDROID_SDK_ROOT \
-    && chown -R root:root $ANDROID_SDK_ROOT \
-    && rm -rf /opt/android/licenses \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+COPY android.packages android.packages
+RUN ( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | sdkmanager --package_file=android.packages
 
 # node.js, npm et cordova
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/nodesource.gpg \
@@ -65,7 +51,7 @@ RUN cordova create mobile-app coop.tibillet.laboutik TibilletLaBoutik \
     && cordova plugin add phonegap-nfc \
     && cordova plugin add cordova-plugin-networkinterface \
     && cordova plugin add cordova-plugin-file \
-    && cordova platform add android@12.0.0 \
+    && cordova platform add android@12.0.1 \
     && cordova platform add browser@6.0.0
 
 WORKDIR /mobile-app

@@ -35,3 +35,7 @@ tempo/
 platforms/
 plugins/
 node_modules/
+
+# clef signature build adroid
+build.json
+TiBillet.keystore

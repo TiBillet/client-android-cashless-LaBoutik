@@ -44,6 +44,15 @@ adb devices
 ```
 cordova build
 ```
+
+- Signer apk   
+```
+cd .../mobile-app/
+# générer une clef "TiBillet.keystore"
+keytool -genkey -v -keystore myNameKeystore.keystore -alias myNameKeystore -keyalg RSA -keysize 2048 -validity 10000
+# build
+cordova build android --release -- --packageType=apk --keystore=./myNameKeystore.keystore --storePassword=xxxxxxxxxx --alias=myNameKeystore --password=xxxxxxxxxx
+```
 ## Utilisation
 
 ### Premier lancement
@@ -56,3 +65,12 @@ cordova build
 ### Reset
 Le bouton "Reset" permet de supprimer de la configuration le serveur en cours (url affichée), et   
 vous demande de rentrer un nouveau code pin.
+
+## Divers
+https://cordova.apache.org/docs/en/11.x/guide/platforms/android/:
+Android 13 (niveau d'API 33)   
+Android 12 (niveaux d'API 31, 32)   
+Android 11 (niveau d'API 30)   
+Android 10 (niveau d'API 29)   
+Android 9 (niveau d'API 22, 28)   
+

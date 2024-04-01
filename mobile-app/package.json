@@ -1,8 +1,8 @@
 {
   "devDependencies": {
-    "cordova-android": "^12.0.0",
-    "cordova-browser": "6.0.0",
+    "cordova-android": "^12.0.1",
     "cordova-plugin-android-permissions": "^1.1.5",
+    "cordova-plugin-badge": "^0.8.9",
     "cordova-plugin-device": "^2.1.0",
     "cordova-plugin-file": "^8.0.1",
     "cordova-plugin-networkinterface": "^2.2.0",
@@ -11,13 +11,12 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-android-permissions": {},
-      "cordova-plugin-device": {},
-      "phonegap-nfc": {},
       "cordova-plugin-networkinterface": {},
-      "cordova-plugin-file": {}
+      "cordova-plugin-file": {},
+      "cordova-plugin-device": {},
+      "phonegap-nfc": {}
     },
     "platforms": [
-      "browser",
       "android"
     ]
   }

@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="coop.tibillet.laboutik" version="1.1.0" xmlns="http://www.w3.org/ns/widgets"
-        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="coop.tibillet.laboutik" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TiBillet/LaBoutik</name>
     <description>Caisse enregistreuse, cashless, monnaie locale et prise de commande. Nécessite un serveur
         TiBillet/LaBoutik : https://tibillet.coop/
@@ -8,35 +7,31 @@
     <author email="contact@codecommun.coop" href="https://codecommun.coop/">
         Coopérative Code Commun
     </author>
-    <!--    <content src="http://192.168.1.4:8000/wv/login_hardware"/>-->
-    <content src="http://localhost/index.html"/>
-    <access origin="*"/>
-    <allow-intent href="*"/>
-    <allow-navigation href="*"/>
-
-    <icon src="res/android/icon.png"/>
-    <splash src="res/screen/android/splash-512x512.png"/>
-    <engine name="browser" spec="6.0.0"/>
-    <plugin name="cordova-plugin-device" spec="2.1.0"/>
-    <plugin name="phonegap-nfc" spec="1.2.0"/>
-    <plugin name="cordova-plugin-file" spec="8.0.1"/>
+    <content src="http://localhost/index.html" />
+    <access origin="*" />
+    <allow-intent href="*" />
+    <allow-navigation href="*" />
+    <icon src="res/android/icon.png" />
+    <splash src="res/screen/android/splash-512x512.png" />
+    <plugin name="cordova-plugin-file" spec="8.0.1" />
     <platform name="android">
-        <preference name="fullscreen" value="true"/>
-        <preference name="Orientation" value="portrait"/>
-        <preference name="android-minSdkVersion" value="28"/>
-        <preference name="android-targetSdkVersion" value="33"/>
-        <icon density="ldpi" src="res/android/logo-36x36.png"/>
-        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/splash-512x512.png"/>
-        <preference name="AndroidWindowSplashScreenBackground" value="#000000"/>
+        <preference name="fullscreen" value="true" />
+        <preference name="Orientation" value="portrait" />
+        <preference name="android-minSdkVersion" value="22" />
+        <preference name="android-targetSdkVersion" value="33" />
+        <icon density="ldpi" src="res/android/logo-36x36.png" />
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/splash-512x512.png" />
+        <preference name="AndroidWindowSplashScreenBackground" value="#000000" />
         <preference name="AndroidPersistentFileLocation" value="Internal" />
+        <preference name="AndroidLaunchMode" value="singleInstance" />
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
-            <application android:usesCleartextTraffic="true"/>
+            <application android:usesCleartextTraffic="true" />
         </edit-config>
     </platform>
-    <config-file target="AndroidManifest.xml" parent="/*" xmlns:android="http://schemas.android.com/apk/res/android">
-        <uses-permission android:name="android.permission.NFC"/>
-        <uses-permission android:name="android.permission.INTERNET"/>
-        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="33" />
+    <config-file parent="/*" target="AndroidManifest.xml" xmlns:android="http://schemas.android.com/apk/res/android">
+        <uses-permission android:name="android.permission.NFC" />
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        <uses-permission android:maxSdkVersion="33" android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     </config-file>
 </widget>
