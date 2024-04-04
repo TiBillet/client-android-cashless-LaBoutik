@@ -48,7 +48,7 @@ RUN cordova create mobile-app coop.tibillet.laboutik TibilletLaBoutik \
     && cd mobile-app \
     && cordova plugin add cordova-plugin-android-permissions \
     && cordova plugin add cordova-plugin-device \
-    && cordova plugin add phonegap-nfc \
+    && cordova plugin add phonegap-nfc-api31 \
     && cordova plugin add cordova-plugin-networkinterface \
     && cordova plugin add cordova-plugin-file \
     && cordova platform add android@12.0.1 \

@@ -1,4 +1,5 @@
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
+/** @typedef {import("./module").env} env */
 import { env } from '../../env.js'
 
 let ip, basePath, saveFileName = 'configLaboutik.json', urlLogin = 'wv/login_hardware'
@@ -8,6 +9,16 @@ let devicesStatus = [
   { name: 'nfc', status: 'off', method: 'nfcTest' }
 ]
 let pinCodeLimit = 6, proprioLimit = 3, step = 0
+
+
+async function getInfosConfigXml() {
+  const name = await cordova.getAppVersion.getAppName()
+  const packageName = await cordova.getAppVersion.getPackageName()
+  const versionCode = await cordova.getAppVersion.getVersionCode()
+  const versionNumber = await cordova.getAppVersion.getVersionNumber()
+
+  return { name, packageName, versionCode, versionNumber }
+}
 
 function generatePassword(length) {
   const chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -107,24 +118,12 @@ window.confirmReset = function () {
   document.querySelector('#modal-confirm').style.display = 'flex'
 }
 
-/**
- * Find specific server in configuration
- * @param {string} urlServer - server to find 
- * @param {object} configuration - app configuration 
- * @returns {undefined|object}
- */
-function findDataServerFromConfiguration(urlServer, configuration) {
-  if (urlServer === undefined) {
-    return undefined
-  }
-  return configuration.servers.find(item => item.server === urlServer)
-}
-
 // supprime la configuration du serveur courant
 window.reset = async function () {
   // supprime le serveur courrant
   const newServers = configuration.servers.filter(item => item.server !== configuration.current_server)
   configuration.servers = newServers
+  configuration.client = null
   configuration.current_server = ''
   const retour = await writeToFile(configuration)
   if (retour === true) {
@@ -144,31 +143,56 @@ window.startApp = async function () {
 }
 
 /**
+ * Find specific server in configuration
+ * @param {string} urlServer - server to find 
+ * @param {object} configuration - app configuration 
+ * @returns {undefined|object}
+ */
+function findDataServerFromConfiguration(urlServer, configuration) {
+  if (urlServer === undefined) {
+    return undefined
+  }
+  return configuration.servers.find(item => item.server === urlServer)
+}
+
+/**
  * Update configuration file
  * @param {object} retour 
  * @returns {boolean}
  */
-async function updateConfigurationFile(retour, pinCode, hostname) {
+async function updateConfigurationFile(options) {
   // console.log('-> updateConfigurationFile, configuration =', configuration)
-  configuration['hostname'] = hostname
+
+  const configXmlData = await getInfosConfigXml()
+  const versionNumber = configXmlData.versionNumber
+
+  configuration['hostname'] = options.hostname
   configuration['uuidDevice'] = device.uuid
   configuration['ip'] = ip
-  configuration['pin_code'] = pinCode
+  configuration['pin_code'] = options.pinCode
+  configuration['version'] = versionNumber
+  configuration.client = {
+    password: generatePassword(30),
+    username: options.username
+  }
+
+  const testServerIn = findDataServerFromConfiguration(options.retour.server_url, configuration)
+  const newServer = {
+    server: options.retour.server_url,
+    // locale: options.retour.locale,
+    publicKeyPem: options.retour.server_public_pem
+  }
 
   // serveur inéxistant dans le fichier de conf, ajouter le
-  const testServerIn = findDataServerFromConfiguration(retour.server_url, configuration)
-  // console.log('testServerIn =', testServerIn)
   if (testServerIn === undefined) {
-    const newServer = {
-      server: retour.server_url,
-      password: generatePassword(30),
-      locale: retour.locale,
-      publicKeyPem: retour.server_public_pem
-    }
+    configuration.servers.push(newServer)
+  } else {
+    const filterServers = configuration.servers.filter(item => item.server !== options.retour.server_url)
+    configuration.servers = filterServers
     configuration.servers.push(newServer)
   }
-  configuration.current_server = retour.server_url
 
+  configuration.current_server = options.retour.server_url
   return await writeToFile(configuration)
 }
 
@@ -180,21 +204,22 @@ window.getUrlServerFromPinCode = async function () {
   const valueElement = document.querySelector('#pinCode').value
   if (valueElement !== '') {
     const pinCode = parseInt(valueElement)
-    let hostname
+    const hostname = slugify(device.manufacturer + '-' + device.model + '-' + device.uuid)
+    // client/app
+    let username
     if (window.crypto.randomUUID) {
-      hostname = slugify(device.model + '-' + device.uuid + window.crypto.randomUUID())
+      username = slugify(device.manufacturer + '-' + device.model + '-' + device.uuid + '-' + window.crypto.randomUUID())
     } else {
-      hostname = slugify(device.model + '-' + device.uuid + (window.URL.createObjectURL(new Blob([])).substring(31)))
+      username = slugify(device.manufacturer + '-' + device.model + '-' + device.uuid + '-' + (window.URL.createObjectURL(new Blob([])).substring(31)))
     }
-
 
     // console.log('pinCode =', pinCode)
     // curl -X POST https://discovery.filaos.re/pin_code/ -H "Content-Type: application/x-www-form-urlencoded" -d "pin_code=695610" -v
     try {
-      // console.log('-> fetch, url =', configuration.server_pin_code + '/pin_code/')
       let data = new URLSearchParams()
       data.append('pin_code', pinCode)
       data.append('hostname', hostname)
+      data.append('username', username)
       const response = await fetch(configuration.server_pin_code + '/pin_code/', {
         mode: 'cors',
         method: 'POST',
@@ -203,9 +228,9 @@ window.getUrlServerFromPinCode = async function () {
       const retour = await response.json()
       // console.log('-> getUrlServerFromPinCode, retour =', retour)
       if (response.status === 200) {
-        const retourUpdate = await updateConfigurationFile(retour, pinCode, hostname)
+        const retourUpdate = await updateConfigurationFile({ retour, pinCode, hostname, username })
         // console.log('retourUpdate =', retourUpdate)
-        if (retourUpdate !== true) {
+        if (retourUpdate === false) {
           afficherMessage('Erreur lors de mise à jour de la configuration.', 'danger')
         } else {
           afficherMessage('Mise à jour de la configuration.')
@@ -385,13 +410,6 @@ function initApp() {
       // affiche l' interface principale
       document.querySelector('#entree-des-donnees').style.display = 'flex'
 
-      const configFromFile = await readFromFile()
-
-      if (configFromFile !== null) {
-        configuration = configFromFile
-      }
-      // console.log('-> initApp, configuration =', configuration)
-
       if (configuration.current_server === '') {
         // entrer code pin
         showStep1()
@@ -411,7 +429,7 @@ function initApp() {
 /**
  * wait cordova (devices activation)
  */
-document.addEventListener('deviceready', () => {
+document.addEventListener('deviceready', async () => {
   /*
   // sentry
   // cordova platform remove android \ 
@@ -426,8 +444,19 @@ document.addEventListener('deviceready', () => {
   // Persistent and private data storage within the application's sandbox using internal memory
   basePath = cordova.file.dataDirectory
   // console.log('basePath =', basePath)
-  afficherMessage('android = ' + device.version)
-  afficherMessage('Device = ' + device.uuid)
-  // console.log('device =', device)
+
+  afficherMessage('pin code server = ' + env.server_pin_code)
+  afficherMessage('manufacturer = ' + device.manufacturer)
+  afficherMessage('model = ' + device.model)
+  afficherMessage('version = ' + device.version)
+  afficherMessage('uuid = ' + device.uuid)
+
+  // console.log('-> avant initApp, configuration =', configuration)
+  const configFromFile = await readFromFile()
+
+  if (configFromFile !== null) {
+    configuration = configFromFile
+  } 
+  
   initApp()
 }, false)

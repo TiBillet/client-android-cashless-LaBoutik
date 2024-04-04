@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="coop.tibillet.laboutik" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="coop.tibillet.laboutik" version="4.24.04.03.18.12" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TiBillet/LaBoutik</name>
     <description>Caisse enregistreuse, cashless, monnaie locale et prise de commande. Nécessite un serveur
         TiBillet/LaBoutik : https://tibillet.coop/
@@ -16,11 +16,20 @@
     <plugin name="cordova-plugin-file" spec="8.0.1" />
     <platform name="android">
         <preference name="fullscreen" value="true" />
-        <preference name="Orientation" value="portrait" />
+        <!-- <preference name="Orientation" value="portrait" /> -->
         <preference name="android-minSdkVersion" value="22" />
         <preference name="android-targetSdkVersion" value="33" />
-        <icon density="ldpi" src="res/android/logo-36x36.png" />
-        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/splash-512x512.png" />
+
+        <!-- ldpi = 36x36 px / mdpi = 48x48 px / hdpi = 72x72 px
+            xhdpi = 96x96 px / xxhdpi = 144x144 px / xxxhdpi = 192x192 px -->
+        <icon src="res/android/ldpi.png" density="ldpi" />
+        <icon src="res/android/mdpi.png" density="mdpi" />
+        <icon src="res/android/hdpi.png" density="hdpi" />
+        <icon src="res/android/xhdpi.png" density="xhdpi" />
+        <icon src="res/android/xxhdpi.png" density="xxhdpi" />
+        <icon src="res/android/xxxhdpi.png" density="xxxhdpi" />
+
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/splash-192x192.png" />
         <preference name="AndroidWindowSplashScreenBackground" value="#000000" />
         <preference name="AndroidPersistentFileLocation" value="Internal" />
         <preference name="AndroidLaunchMode" value="singleInstance" />

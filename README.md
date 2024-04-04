@@ -74,3 +74,9 @@ Android 11 (niveau d'API 30)
 Android 10 (niveau d'API 29)   
 Android 9 (niveau d'API 22, 28)   
 
+# Correctif cordova 
+Fichier .../mobile-app/platforms/android/app/src/main/java/com/chariotsolutions/nfc/plugin/NfcPlugin.java :
+
+- remplacer la ligne 486 : pendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
+- par : pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
