@@ -11,6 +11,10 @@ let devicesStatus = [
 let pinCodeLimit = 6, proprioLimit = 3, step = 0
 
 
+window.testPrint = function () {
+  cordova.plugins.printer.print('<b>Hello Cordova!</b>')
+}
+
 async function getInfosConfigXml() {
   const name = await cordova.getAppVersion.getAppName()
   const packageName = await cordova.getAppVersion.getPackageName()
@@ -430,17 +434,6 @@ function initApp() {
  * wait cordova (devices activation)
  */
 document.addEventListener('deviceready', async () => {
-  /*
-  // sentry
-  // cordova platform remove android \ 
-  var Sentry = cordova.require("sentry-cordova.Sentry")
-  Sentry.init({
-    dsn: "https://087dc5259312963a9be647d20f4a2b90@o262913.ingest.us.sentry.io/4506981893341185",
-    maxBreadcrumbs: 50,
-    debug: true,
-  });
-  */
-
   // Persistent and private data storage within the application's sandbox using internal memory
   basePath = cordova.file.dataDirectory
   // console.log('basePath =', basePath)
@@ -456,7 +449,8 @@ document.addEventListener('deviceready', async () => {
 
   if (configFromFile !== null) {
     configuration = configFromFile
-  } 
-  
+  }
+
   initApp()
+
 }, false)

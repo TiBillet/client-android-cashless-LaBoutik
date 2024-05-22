@@ -17,8 +17,12 @@
       <!-- si nfc pas activé un message sera affiché -->
     </div>
     <div id="entree-des-donnees" class="conteneur BF-col">
-      <img src="assets/images/logo.png" />
-
+      <!-- <img src="assets/images/logo.png" /> -->
+      <div class="BF-col conteneur-logo">
+        <div class="tibillet-font tibillet-font-size1">LaBoutik</div>
+        <div class="tibillet-font tibillet-font-size2">TiBillet</div>
+      </div>
+    </div>
       <!-- étape 1 - pas de configuration sauvegardée -->
       <div id="step-1" class="conteneur BF-col" style="display: none">
         <div id="field-pin" class="ligne BF-col">
@@ -34,6 +38,12 @@
             Valider
           </button>
         </div>
+        <div class="ligne BF-ligne mt-2r">
+          <button class="action c-danger" type="button" onclick="testPrint()">
+            Printer
+          </button>
+        </div>
+
       </div>
 
       <!-- étape 2 - configuration sauvegardée, lancerl'application ou réentrer un pin code -->

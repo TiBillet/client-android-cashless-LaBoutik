@@ -1,3 +1,8 @@
+@font-face {
+    font-family: logoFont;
+    src: url("fonts/BeStrongRegular.otf") format("opentype");
+}
+
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   /* make transparent link selection, adjust last value opacity 0 to 1.0 */
@@ -143,4 +148,24 @@ body {
   display: flex;
   background-color: #160101;
   opacity: 0.9;
+}
+
+.tibillet-font {
+  font-family: logoFont;
+  color: #FFFFFF;
+  margin-bottom: 1rem;
+}
+
+.tibillet-font-size1 {
+  font-size: 4rem;
+  line-height: 4rem;
+}
+
+.tibillet-font-size2 {
+  font-size: 2rem;
+  line-height: 2rem;
+}
+
+.conteneur-logo {
+  margin: 5rem 0 2rem 0;
 }
