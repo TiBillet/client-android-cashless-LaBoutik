@@ -230,7 +230,7 @@ window.getUrlServerFromPinCode = async function () {
         body: data
       })
       const retour = await response.json()
-      // console.log('-> getUrlServerFromPinCode, retour =', retour)
+      console.log('-> getUrlServerFromPinCode, retour =', retour)
       if (response.status === 200) {
         const retourUpdate = await updateConfigurationFile({ retour, pinCode, hostname, username })
         // console.log('retourUpdate =', retourUpdate)
