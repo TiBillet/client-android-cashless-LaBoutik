@@ -1,6 +1,6 @@
 @font-face {
-    font-family: logoFont;
-    src: url("fonts/BeStrongRegular.otf") format("opentype");
+  font-family: logoFont;
+  src: url("fonts/BeStrongRegular.otf") format("opentype");
 }
 
 * {
@@ -45,13 +45,13 @@ body {
 
 #app-log {
   display: none;
-  position: absolute;
+ position: absolute;
   width: calc(100% - 8px);
   height: 164px;
   background-color: #FFFFFF;
   color: #000000;
-  left: 4px;
-  bottom: 4px;
+  left: 0;
+  bottom: 0;
   overflow-y: auto;
 }
 
@@ -84,13 +84,17 @@ body {
 }
 
 .info {
-  font-size: 18px;
+  font-size: 1rem;
   color: #FFFFFF;
+  margin-bottom: 0.3rem;
 }
 
 .entree {
-  width: 80%;
+  width: 30%;
+  height: 2rem;
   color: #000000;
+  font-size: 2rem;
+  background-color: #ffffff;
 }
 
 .action {
@@ -167,5 +171,5 @@ body {
 }
 
 .conteneur-logo {
-  margin: 5rem 0 2rem 0;
+  margin: 2rem 0 2rem 0;
 }
