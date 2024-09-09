@@ -252,7 +252,7 @@ window.getUrlServerFromPinCode = async function () {
       document.querySelector('#retour-pin-code').innerText = err.message
     }
   } else {
-    document.querySelector('#retour-pin-code').innerText = "No pinCode"
+    document.querySelector('#retour-pin-code').innerText = "No PIN code"
   }
 }
 
@@ -275,7 +275,7 @@ function afficherMessage(message, typeMessage) {
  */
 window.nfcTest = function () {
   nfc.enabled(() => {
-    afficherMessage('NFC activé !')
+    afficherMessage('NFC enabled !')
     // message nfc on
     const nfcDevice = new CustomEvent('msg_device', {
       detail: {
@@ -292,8 +292,12 @@ window.nfcTest = function () {
     let frag = `
       <div  id="alert-nfc" class="ligne-alerte BF-col">
         <div class="message-icon">
+          <!-- fr
           <div class="BF-ligne">- NFC désactivé, </div>
           <div class="BF-ligne">Vous devez l'activer et relancer l'application !</div>
+          -->
+          <div class="BF-ligne">- NFC disabled, </div>
+          <div class="BF-ligne">activate it and restart the application.</div>
         </div>
         <span>
           <svg version="1.1" width="134.39999" height="106.56" viewBox="0 0 84.480003 49.919998">
@@ -316,9 +320,14 @@ window.networkTest = function () {
   const networkFragmentHtml = `
   <div id="alert-network" class="ligne-alerte BF-col">
     <div class="message-icon">
+      <!-- fr
       <div class="BF-ligne">- Aucune connexion, Vous devez activer</div>
       <div class="BF-ligne">le réseau wifi ou 4G ou 5G et relancer</div>
       <div class="BF-ligne">l'application !</div>
+      -->
+      <div class="BF-ligne">- No connection, activate</div>
+      <div class="BF-ligne">wifi or 4G or 5G network </div>
+      <div class="BF-ligne">and restart the application.</div>
     </div>
     <span>
       <svg version="1.1" width="134.39999" height="106.56" viewBox="0 0 134.39999 106.56">
@@ -441,7 +450,7 @@ document.addEventListener('deviceready', async () => {
   afficherMessage('pin code server = ' + env.server_pin_code)
   afficherMessage('manufacturer = ' + device.manufacturer)
   afficherMessage('model = ' + device.model)
-  afficherMessage('version = ' + device.version)
+  afficherMessage('android = ' + device.version)
   afficherMessage('uuid = ' + device.uuid)
 
   // console.log('-> avant initApp, configuration =', configuration)
