@@ -27,32 +27,25 @@ body {
   width: 100%;
 }
 
-#conteneur {
-  width: 100%;
-  height: calc(100% - 164px);
+@font-face {
+  font-family: logoFont;
+  src: url("fonts/BeStrongRegular.otf") format("opentype");
 }
 
-#affichage-alertes {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  margin: 4px;
+.tibillet-font {
+  font-family: logoFont;
+  color: #FFFFFF;
 }
 
-#entree-des-donnees {
-  display: none;
+.tibillet-font-size1 {
+  font-size: 4rem;
+  line-height: 4rem;
+  margin: 10px 0 8px 0;
 }
 
-#app-log {
-  display: none;
- position: absolute;
-  width: calc(100% - 8px);
-  height: 164px;
-  background-color: #FFFFFF;
-  color: #000000;
-  left: 0;
-  bottom: 0;
-  overflow-y: auto;
+.tibillet-font-size2 {
+  font-size: 2rem;
+  line-height: 2rem;
 }
 
 .BF-col {
@@ -71,30 +64,51 @@ body {
   align-items: center;
 }
 
-.BF-ligne-deb {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+#app {
+  width: 100%;
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
+  --danger-color: #FF0000;
+  --success-color: #00FF00;
+  --normal-color: #000000;
+  --info-color: #0000FF;
+  --error-color: #ffa600;
+  --ifm-font-color-base: #FFFFFF;
 }
 
-.ligne {
+#app-header {
   width: 100%;
-  margin: 8px 0;
+  height: 20%;
+}
+
+#app-main {
+  width: 100%;
+  height: 50%;
+}
+
+#app-infos-container {
+  width: 100%;
+  height: 30%;
+  background-color: #FFFFFF;
+  font-size: 1.5rem;
+  overflow-y: scroll;
+}
+
+#app-infos-devices {
+  width: 100%;
+  /* height: 50%;
+  background-color: #00FF00; */
+}
+
+#app-infos-logs {
+  width: 100%;
+  /* height: 50%;
+  background-color: #2f00ff; */
 }
 
 .info {
-  font-size: 1rem;
-  color: #FFFFFF;
-  margin-bottom: 0.3rem;
-}
-
-.entree {
-  width: 30%;
-  height: 2rem;
-  color: #000000;
-  font-size: 2rem;
-  background-color: #ffffff;
+  padding: 4px 4px 0 4px;
 }
 
 .action {
@@ -113,25 +127,22 @@ body {
   align-items: center;
 }
 
-.c-green {
-  background-color: #339448;
+.c-black {
+  color: #000000;
 }
 
-.c-blue {
+.bgc-blue {
   background-color: #0f53b9;
 }
 
-.c-danger {
-  background-color: #ff0000;
+.bgc-green {
+  background-color: #00FF00;
 }
 
-.ligne-alerte {
-  margin: 30px 0 8px 0;
-}
-
-.message-icon {
+.label {
+  font-size: 1.5rem;
   color: #FFFFFF;
-  font-size: 16px;
+  margin-bottom: 0.3rem;
 }
 
 .info-danger {
@@ -139,37 +150,56 @@ body {
   font-size: 1rem;
 }
 
-.mt-2r {
-  margin-top: 2rem;
+.devices-off {
+  height: 100%;
 }
 
-#modal-confirm {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  background-color: #160101;
-  opacity: 0.9;
+.devices-off-item {
+  margin: 0 16px;
 }
 
-.tibillet-font {
-  font-family: logoFont;
-  color: #FFFFFF;
-  margin-bottom: 1rem;
+.h100 {
+  height: 100%;
 }
 
-.tibillet-font-size1 {
-  font-size: 4rem;
-  line-height: 4rem;
-}
-
-.tibillet-font-size2 {
+#pin-code {
   font-size: 2rem;
-  line-height: 2rem;
+  line-height: 2.4rem;
+  width: 140px;
+  text-align: center;
 }
 
-.conteneur-logo {
-  margin: 2rem 0 2rem 0;
+/* spinner */
+.spinner-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  opacity: .6;
+  background-color: #1a1102;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.spinner {
+  --spinner-size: 100px;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  border: 5px solid #FFF;
+  border-bottom-color: #0000FF;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
