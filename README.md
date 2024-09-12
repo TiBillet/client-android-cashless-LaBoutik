@@ -26,7 +26,7 @@ Autoriser l'accès à l'ordi.
 cordova run android
 ```
 
-- Si erreur de signature
+- Si erreur de signature, désintaller l'app ou :
 ```
   adb uninstall coop.tibillet.laboutik
   cordova run android
@@ -73,3 +73,7 @@ Android 12 (niveaux d'API 31, 32)
 Android 11 (niveau d'API 30)   
 Android 10 (niveau d'API 29)   
 Android 9 (niveau d'API 22, 28)   
+
+# Attention
+Vérifier la version d'android installée pour cordova (android@12.0.1):
+cordova platform add android@12.0.1

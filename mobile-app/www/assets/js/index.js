@@ -1,10 +1,14 @@
+/* sources:
+  nfc - https://github.com/nerdy-harry/phonegap-nfc-api31?tab=readme-ov-file#nfcshowsettings
+*/
+
+/* eslint-disable no-undef */
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
-/** @typedef {import("./module").env} env */
-import { env } from '../../env.js'
+
 import {
-  nfcTest, networkTest, listenDevices, getConfigFromFile, launchApp, launchRender,
-  checkPinCode, getUrlServerFromPinCode, activeSpinner, goLaboutik
-} from './actions.js'
+  nfcTest, networkTest, listenDevices, getConfigFromFile, launchRender, checkPinCode, getPinCode, 
+  activeSpinner, getUrlServerFromPinCode, deleteServer, goLaboutik
+} from './machineActions.js'
 
 const state = {
   idApp: '#app',
@@ -16,7 +20,8 @@ const state = {
   basePath: null,
   configuration: {},
   spinner: false,
-  pinCode: null,
+  pinCode: '',
+  selectionServer: '',
   errorValuePinCode: '',
   devices: [
     { name: 'network', status: 'off', permission: 'INTERNET' },
@@ -27,19 +32,19 @@ const state = {
 const machine = {
   INIT: {
     fromStep: 'IDLE',
-    actions: ['networkTest', 'nfcTest', 'listenDevices']
+    actions: ['listenDevices', 'networkTest', 'nfcTest']
   },
   ALL_DEVICES_ON: {
     fromStep: 'INIT',
     actions: 'getConfigFromFile',
   },
-  START: {
-    fromStep: 'ALL_DEVICES_ON',
-    actions: 'launchApp'
+  LIST_SERVERS: {
+    fromStep: ['ALL_DEVICES_ON', 'GET_SERVER_FROM_PIN_CODE', 'GET_PIN_CODE', 'CONFIRM_DELETE_SERVER', 'DELETE_SERVER'],
+    actions: 'launchRender'
   },
   GET_PIN_CODE: {
-    fromStep: ['START', 'CHECK_PIN_CODE', 'GET_SERVER_FROM_PIN_CODE'],
-    actions: 'launchRender'
+    fromStep: ['LIST_SERVERS', 'CHECK_PIN_CODE', 'GET_SERVER_FROM_PIN_CODE'],
+    actions: 'getPinCode'
   },
   CHECK_PIN_CODE: {
     fromStep: 'GET_PIN_CODE',
@@ -50,19 +55,28 @@ const machine = {
     actions: ['activeSpinner', 'getUrlServerFromPinCode']
   },
   GO_SERVER: {
-    fromStep: ['START', 'GET_SERVER_FROM_PIN_CODE'],
+    fromStep: 'LIST_SERVERS',
     actions: 'goLaboutik'
+  },
+  CONFIRM_DELETE_SERVER: {
+    fromStep: 'LIST_SERVERS',
+    actions: 'launchRender'
+  },
+  DELETE_SERVER: {
+    fromStep: ['CONFIRM_DELETE_SERVER'],
+    actions: 'deleteServer'
   },
   actions: {
     networkTest,
     nfcTest,
     listenDevices,
     getConfigFromFile,
-    launchApp,
     launchRender,
+    getPinCode,
     checkPinCode,
     activeSpinner,
     getUrlServerFromPinCode,
+    deleteServer,
     goLaboutik
   }
 }
@@ -83,7 +97,7 @@ class ManageSteps {
   }
 
   // run
-  async run(step) {
+  async run(step, data) {
     // console.log('-> run, step =', step)
     const currentStep = this.state.currentStep
     const stepToManage = this.steps[step]
@@ -104,19 +118,23 @@ class ManageSteps {
 
     // lance les actions si transition bonne
     if (origineStep) {
+      // params
+      if (data !== undefined || data !== null) {
+        this.state.params = data
+      }
       // maj étape
       this.setStep(step)
       // plusieurs actions
       if (typeof (stepToManage.actions) === 'object') {
         stepToManage.actions.forEach(action => {
           this.steps.actions[action](this.state)
-        });
+        })
       } else {
         // une seule action
         this.steps.actions[stepToManage.actions](this.state)
       }
     } else {
-      console.log('-> Etape(s) impossible(s) !');
+      console.log('-> Etape(s) impossible(s) !')
     }
   }
 }
@@ -129,55 +147,6 @@ document.addEventListener('deviceready', async () => {
   // Persistent and private data storage within the application's sandbox using internal memory
   state.basePath = cordova.file.dataDirectory
 
-  /*
-  log('info', 'pin code server = ' + env.server_pin_code)
-  log('info', 'manufacturer = ' + device.manufacturer)
-  log('info', 'model = ' + device.model)
-  log('info', 'android = ' + device.version)
-  log('info', 'uuid = ' + device.uuid)
-
-  // console.log('-> avant initApp, configuration =', configuration)
-  const configFromFile = await readFromFile()
-
-  if (configFromFile !== null) {
-    state.configuration = configFromFile
-  }
-
-  // wait devices on
-  document.addEventListener('msg_device', async (evt) => {
-    try {
-      // { name: 'network', status: 'off', method: 'networkTest' },
-      let searchDevice = state.devicesStatus.find(device => device.name === evt.detail.name)
-      searchDevice.status = evt.detail.status
-    } catch (err) {
-      console.log('-> msg_device, error :', err)
-    }
-    let allDevicesOn = true
-    state.devicesStatus.forEach(device => {
-      if (device.status === 'off') {
-        allDevicesOn = false
-      }
-    })
-
-    // console.log('allDevicesOn =', allDevicesOn)
-    if (allDevicesOn === true) {
-      if (state.configuration.current_server === '') {
-        // entrer code pin
-        state.step = 'enterCodePin'
-      } else {
-        // lancer application / modifier server / reset serveur courant
-        state.step = 'start'
-      }
-    }
-    render(state)
-  })
-
-  // tests device activation
-  for (const key in state.devicesStatus) {
-    const method = state.devicesStatus[key].method
-    state.methods[method]()
-  }
-  */
   window.ma = new ManageSteps()
   ma.run('INIT')
 }, false)

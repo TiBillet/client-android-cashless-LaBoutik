@@ -1,16 +1,16 @@
-FROM ubuntu:22.04
+FROM debian:12-slim
 
 # base
 RUN apt-get update \
     && apt-get install ca-certificates curl gnupg wget unzip sudo nano iputils-ping gcc g++ make apt-transport-https -yq
 
 # java
-RUN apt-get install openjdk-11-jdk-headless -yq
+RUN apt-get install openjdk-17-jdk-headless -yq
 
 ARG GRADLE_VERSION=7.6.3
 ARG ANDROID_CMDTOOLS_VERSION=9477386
 
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64
 ENV GRADLE_USER_HOME /opt/gradle
 ENV ANDROID_SDK_ROOT /usr/local/android-sdk-linux
 ENV ANDROID_HOME $ANDROID_SDK_ROOT
@@ -39,19 +39,6 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo 
     && apt install nodejs -y\
     && npm install -g --unsafe-perm cordova@12.0.0 \
     && apt-get autoremove -y \
-    && apt-get clean \
-
-WORKDIR /
-
-# projet
-RUN cordova create mobile-app coop.tibillet.laboutik TibilletLaBoutik \
-    && cd mobile-app \
-    && cordova plugin add cordova-plugin-android-permissions \
-    && cordova plugin add cordova-plugin-device \
-    && cordova plugin add phonegap-nfc-api31 \
-    && cordova plugin add cordova-plugin-networkinterface \
-    && cordova plugin add cordova-plugin-file \
-    && cordova platform add android@12.0.1 \
-    && cordova platform add browser@6.0.0
+    && apt-get clean 
 
 WORKDIR /mobile-app

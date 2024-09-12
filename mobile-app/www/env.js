@@ -3,5 +3,6 @@ export const env = {
   front_type: "FMO",
   server_pin_code: "https://discovery.tibillet.coop",
   servers: [],
-  current_server: ""
+  current_server: "",
+  client: null
 }
