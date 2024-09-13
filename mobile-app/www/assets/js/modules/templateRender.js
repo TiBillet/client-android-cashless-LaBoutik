@@ -1,4 +1,11 @@
 /* eslint-disable no-undef */
+const bgColors = {
+  danger: '#FF0000',
+  success: '#00FF00',
+  normal: '#000000',
+  info: '#0000FF',
+  error: '#ffa600',
+}
 
 function showSpinner(state) {
   if (state.spinner === true) {
@@ -98,10 +105,10 @@ function getPinCode(state) {
       </div >
       <div id="retour-pin-code" class="info-danger">${state.errorValuePinCode}</div>
       <div class="ligne BF-ligne" style="margin-top: 3rem;">
+        ${ showBtReturn(state) }
         <button class="action bgc-success c-black" type="button" onclick="ma.run('CHECK_PIN_CODE')">
           validate
         </button>
-        ${ showBtReturn(state) }
       </div>
     </div>`
   } else {
@@ -111,13 +118,13 @@ function getPinCode(state) {
 
 function showInfos(state) {
   return `<!-- <div class="log-msg" style="color:var(--info-color);"> current step = ${state.currentStep}</div> -->
-  <div class="log-msg" style="color:var(--info-color);">version = ${state.configuration.version}</div>
+  <div class="log-msg" style="color:var(--info-color);">version = ${state.configuration.versionApk}</div>
   <div class="log-msg" style="color:var(--info-color);">tagId = <span id="rep-tag-id"></span></div>
   <div class="log-msg" style="color:var(--info-color);">ip = ${state.ip}</div>
-  <div class="log-msg" style = "color:var(--info-color);" > manufacturer = ${device.manufacturer}</ >
+  <div class="log-msg" style="color:var(--info-color);"> manufacturer = ${device.manufacturer}</div>
   <div class="log-msg" style="color:var(--info-color);">model = ${device.model}</div>
   <div class="log-msg" style="color:var(--info-color);">android = ${device.version}</div>
-  <div class="log-msg" style="color:var(--info-color);">uuid = ${device.uuid}</div>`
+  <div class="log-msg bar-bottom" style="color:var(--info-color);">uuid = ${device.uuid}</div>`
 }
 
 function showLOgs(state) {
@@ -177,17 +184,26 @@ export const render = function (state) {
 
   </section>
   <section id="app-infos-container">
-    <!-- infos devices -->
-    <div id="app-infos-devices">
-    ${showInfos(state)}
-    </div>
-    <div id="app-infos-logs">
-      ${showLOgs(state)}
+    <div id="logs-led"></div>
+    <div id="app-infos-container-scroll">
+      <!-- infos devices -->
+      <div id="app-infos-devices">
+      ${showInfos(state)}
+      </div>
+      <!-- infos logs -->
+      <div id="app-infos-logs">
+        ${showLOgs(state)}
+      </div>
     </div>
   </section>
   <!-- confirm delete server -->
   ${confirmDeleteServer(state)}`
   document.querySelector(state.idApp).innerHTML = template
+  // logs led
+  const lastLog = (state.logs.length) -1
+  if (lastLog >= 0) {
+    document.querySelector('#logs-led').style.background = bgColors[state.logs[lastLog].typeMsg]
+  }
 }
 
 

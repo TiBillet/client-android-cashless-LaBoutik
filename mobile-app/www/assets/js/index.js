@@ -6,9 +6,9 @@
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
 
 import {
-  nfcTest, networkTest, listenDevices, getConfigFromFile, launchRender, checkPinCode, getPinCode, 
-  activeSpinner, getUrlServerFromPinCode, deleteServer, goLaboutik
-} from './machineActions.js'
+  nfcTest, networkTest, listenDevices, getConfigFromFile, launchRender, checkPinCode,
+  getPinCode, activeSpinner, getUrlServerFromPinCode, deleteServer, goLaboutik
+} from './modules/machineActions.js'
 
 const state = {
   idApp: '#app',
@@ -67,9 +67,9 @@ const machine = {
     actions: 'deleteServer'
   },
   actions: {
+    listenDevices,
     networkTest,
     nfcTest,
-    listenDevices,
     getConfigFromFile,
     launchRender,
     getPinCode,

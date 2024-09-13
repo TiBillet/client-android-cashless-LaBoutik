@@ -90,6 +90,7 @@ body {
   --bt-height0: 60px;
   --bt-width0: 180px;
   --bt-margin02: 4px;
+  overflow: hidden;
 }
 
 #app-header {
@@ -103,11 +104,17 @@ body {
 }
 
 #app-infos-container {
+  position: relative;
   width: 100%;
   height: 20%;
+}
+
+#app-infos-container-scroll {
+  width: 100%;
+  height: 100%;
   background-color: #FFFFFF;
   font-size: 1.5rem;
-  overflow-y: scroll;
+  overflow-y: scroll !important;
 }
 
 #app-infos-devices {
@@ -120,6 +127,23 @@ body {
 
 .log-msg {
   font-size: 1.2rem;
+}
+
+#logs-led {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #3b567f;
+  border-color: transparent;
+  transition: background-color 2s;
+}
+
+.bar-bottom {
+  border-bottom: 1px solid #3b567f;
+  margin-bottom: 6px;
 }
 
 .info {

@@ -1,8 +1,9 @@
 /* eslint-disable no-undef */
 import { render } from './templateRender.js'
-import { env } from '../../env.js'
+import { env } from '../../../env.js'
 
-export function log(typeMsg, msg, state) {
+window.log = function (typeMsg, msg, state) {
+  console.log('-> log, typeMsg =', typeMsg,'  --  msg =', msg)
   state.logs.push({ typeMsg, msg })
   render(state)
 }
@@ -45,7 +46,7 @@ async function writeToFile(state) {
         function (fileEntry) {
           fileEntry.createWriter(function (fileWriter) {
             fileWriter.onwriteend = function () {
-              console.log('info , write of file "' + state.saveFileName + '" completed.')
+              // file write ok
               resolve(true)
             }
             fileWriter.onerror = function (e) {
@@ -100,15 +101,12 @@ function findDataServerFromConfiguration(urlServer, configuration) {
  */
 async function updateConfigurationFile(options, state) {
   // console.log('-> updateConfigurationFile, configuration =', state.configuration)
-  const configXmlData = await getInfosConfigXml()
-  const versionNumber = configXmlData.versionNumber
   const password =  generatePassword(30)
 
   state.configuration['hostname'] = options.hostname
   state.configuration['uuidDevice'] = device.uuid
   state.configuration['ip'] = state.ip
   state.configuration['pin_code'] = options.pinCode
-  state.configuration['version'] = versionNumber
   state.configuration.client = {
     password,
     username: options.username
@@ -253,6 +251,9 @@ export async function getConfigFromFile(state) {
   } else {
     state.configuration = env
   }
+  // add info version apk
+  const configXmlData = await getInfosConfigXml()
+  state.configuration['versionApk'] = configXmlData.versionNumber
   // ma.run('START')
   ma.run('LIST_SERVERS')
 }
@@ -353,7 +354,7 @@ export async function getUrlServerFromPinCode(state) {
 
 export async function deleteServer(state) {
   const server = state.params
-  console.log('-> deleteServer, server =', server)
+  // console.log('-> deleteServer, server =', server)
   // change current server and client if url is the current server
   if (state.configuration.current_server === server) {
     state.configuration.current_server = ''
@@ -362,11 +363,9 @@ export async function deleteServer(state) {
   // delete server data from servers list
   const newServers = state.configuration.servers.filter(item => item.server !== server)
   state.configuration.servers = newServers
-  console.log('newServers =', newServers)
-  
+
   // update configuration file
   const result = await writeToFile(state)
-  console.log('result =', result)
 
   if (result === true) {
     ma.run('LIST_SERVERS')
