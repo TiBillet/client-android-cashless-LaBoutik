@@ -48,7 +48,7 @@ cordova build
 - Signer apk   
 ```
 cd .../mobile-app/
-# générer une clef "TiBillet.keystore"
+# générer une clef "myNameKeystore.keystore"
 keytool -genkey -v -keystore myNameKeystore.keystore -alias myNameKeystore -keyalg RSA -keysize 2048 -validity 10000
 # build
 cordova build android --release -- --packageType=apk --keystore=./myNameKeystore.keystore --storePassword=xxxxxxxxxx --alias=myNameKeystore --password=xxxxxxxxxx
