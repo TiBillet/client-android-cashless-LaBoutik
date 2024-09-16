@@ -51,14 +51,21 @@ function showDevicesOff(state) {
     return ""
   }
 }
- 
+
+// dev
+function mockServersList(nb) {
+  let servers = []
+  for (let i = 0; i < nb; i++) {
+    servers.push( {server: `https://server${i}.test.tibillet.re/` })
+  }
+  return servers
+}
+
 function showListServer(state) {
   if (state.currentStep === "LIST_SERVERS") {
     let content = `<div class="BF-col h100">
-      <div class="BF-col servers-list-content">`
-    // dev
-    // state.configuration.servers = devMockData()
-
+      <div class="servers-list-content">`
+    // dev --- state.configuration.servers = mockServersList(10)
     state.configuration.servers.forEach(item => {
       const url = new URL(item.server)
       content += `<div class="BF-ligne servers-list-item">

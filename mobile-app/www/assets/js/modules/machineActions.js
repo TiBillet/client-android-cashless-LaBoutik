@@ -109,7 +109,8 @@ async function updateConfigurationFile(options, state) {
   state.configuration['pin_code'] = options.pinCode
   state.configuration.client = {
     password,
-    username: options.username
+    username: options.username,
+    pin_code: options.pinCode
   }
 
   const testServerIn = findDataServerFromConfiguration(options.retour.server_url, state.configuration)
@@ -359,6 +360,7 @@ export async function deleteServer(state) {
   if (state.configuration.current_server === server) {
     state.configuration.current_server = ''
     state.configuration.client = null
+    state.configuration.pin_code = ''
   }
   // delete server data from servers list
   const newServers = state.configuration.servers.filter(item => item.server !== server)
@@ -388,6 +390,8 @@ export async function goLaboutik(state) {
   state.configuration.current_server = server
   // change client of the new current server
   state.configuration.client = client
+  // change le pin code of the new current server
+  state.configuration.pin_code = client.pin_code
   // update configuration file
   const result = await writeToFile(state)
   console.log('result =', result)
