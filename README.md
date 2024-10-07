@@ -26,6 +26,11 @@ Le message "BUILD SUCCESSFUL" confirmera le bon fonctionnement.
 ```
 adb devices
 ```
+retour (appareil ok) :
+```
+List of devices attached
+V3D0245M21902   device
+```
 
 -Lancer le "build" et le déploiement de l'application
 ```
