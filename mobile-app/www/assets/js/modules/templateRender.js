@@ -177,8 +177,19 @@ function confirmDeleteServer(state) {
   }
 }
 
+function networkIsOn() {
+  if (window.navigator.onLine === true) {
+    ma.run('LIST_SERVERS')
+  } else {
+    // 5 secondes
+    setTimeout(networkIsOn, 5000)
+  }
+}
+
 function showNoNetwork(state) {
   if (state.currentStep === "NO_NETWORK") {
+    state.spinner = false
+    networkIsOn()
     return `<div id="network-offline">
        <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="100px" style="color:#FF0000;" viewBox="0 0 24 24">
            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -186,16 +197,9 @@ function showNoNetwork(state) {
                <path d="M12 3q2 .5 2 6q0 .506-.017.968m-.55 3.473Q12.934 14.766 12 15m0-12q-1.405.351-1.822 3.167m-.16 3.838Q10.192 14.549 12 15M6 9h3m4 0h5M3 20h7m4 0h7m-11 0a2 2 0 1 0 4 0a2 2 0 0 0-4 0m2-5v3M3 3l18 18"/>
            </g>
        </svg>
-       <p>no connection.</p>
-       <p>Check your network.</p>
+       <p class="c-white">no connection.</p>
+       <p class="c-white">Check your network.</p>
    </div>`
-
-   // 5 secondes
-  setTimeout(() => {
-    if (window.navigator.onLine === true) {
-			ma.run('LIST_SERVERS')
-		} 
-  }, 5000)
   } else {
     return ''
   }

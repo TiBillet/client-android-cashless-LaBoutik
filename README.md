@@ -53,24 +53,3 @@ keytool -genkey -v -keystore myNameKeystore.keystore -alias myNameKeystore -keya
 # build
 cordova build android --release -- --packageType=apk --keystore=./myNameKeystore.keystore --storePassword=xxxxxxxxxx --alias=myNameKeystore --password=xxxxxxxxxx
 ```
-
-## Utilisation
-
-### Premier lancement
-- Entrer le code pin de votre serveur et cliquer sur "Valider" (Les données du serveur sont sauvegardées pour la prochaine utilisation).
-- Cliquer sur "Lancer l'application".
-
-### Modifier le serveur
-- La modification du serveur est identique au "Premier lancement"
-
-### Reset
-Le bouton "Reset" permet de supprimer de la configuration le serveur en cours (url affichée), et   
-vous demande de rentrer un nouveau code pin.
-
-## Divers
-https://cordova.apache.org/docs/en/11.x/guide/platforms/android/:
-Android 13 (niveau d'API 33)   
-Android 12 (niveaux d'API 31, 32)   
-Android 11 (niveau d'API 30)   
-Android 10 (niveau d'API 29)   
-Android 9 (niveau d'API 22, 28)   
