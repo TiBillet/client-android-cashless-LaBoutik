@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="coop.tibillet.laboutik" version="0.9.24.09.17.14.55" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="coop.tibillet.laboutik" version="0.9.24.10.08.12.11" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TiBillet LaBoutik</name>
     <description>Caisse enregistreuse, cashless, monnaie locale et prise de commande. Nécessite un serveur
         TiBillet/LaBoutik : https://tibillet.coop/
