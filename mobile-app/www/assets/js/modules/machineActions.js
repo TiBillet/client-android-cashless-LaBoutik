@@ -143,6 +143,36 @@ function listenNfcAndShow() {
   })
 }
 
+// bluetooth actif ?
+export function bluetoothTest(state) {
+  let netDevice = new CustomEvent('msg_device', {})
+
+  try {
+    bluetoothSerial.isEnabled(
+      function () {
+        console.log("Bluetooth is enabled")
+        // status on
+        state.devices.find(device => device.name === 'bluetooth').status = 'on'
+        // message send
+        document.dispatchEvent(netDevice)
+      },
+      function () {
+        console.log("Bluetooth is *not* enabled")
+        // status off
+        state.devices.find(device => device.name === 'bluetooth').status = 'off'
+        // message send
+        document.dispatchEvent(netDevice)
+      }
+    )
+  } catch (error) {
+    console.log("bluetoothSerial.enable, ", error)
+    log('error', 'bluetooth: ' + error, 'danger')
+    // message network off
+    detail.status = 'off'
+    document.dispatchEvent(netDevice)
+  }
+}
+
 // network actif ?
 export function networkTest(state) {
   let detail = {

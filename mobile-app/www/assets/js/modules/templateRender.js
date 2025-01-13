@@ -52,6 +52,20 @@ function showDevicesOff(state) {
           </span>
         </div>`
       }
+
+       // bluetooth off
+       if (device.name === "bluetooth" && device.status === "off") {
+        mainContent += `<div id="alert-network" class="devices-off-item BF-col">
+          <div class="message-icon">
+            <div class="BF-ligne">- No bluetooth.</div>
+            <div class="BF-ligne">Activate bluetooth.</div>
+            <div class="BF-ligne">and restart the application.</div>
+          </div>
+          <span>
+            <img src="http://localhost/assets/images/no_bluetooth.svg" />
+          </span>
+        </div>`
+      }
     })
     mainContent += "</div></div>"
     return mainContent

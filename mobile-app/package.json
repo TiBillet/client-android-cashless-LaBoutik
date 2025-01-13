@@ -4,6 +4,7 @@
     "cordova-plugin-android-permissions": "^1.1.5",
     "cordova-plugin-app-version": "^0.1.14",
     "cordova-plugin-badge": "^0.8.9",
+    "cordova-plugin-bluetooth-serial": "^0.4.7",
     "cordova-plugin-device": "^3.0.0",
     "cordova-plugin-file": "^8.1.0",
     "cordova-plugin-networkinterface": "^2.2.0",
@@ -17,7 +18,8 @@
       "cordova-plugin-networkinterface": {},
       "cordova-plugin-file": {},
       "cordova-plugin-android-permissions": {},
-      "cordova-plugin-app-version": {}
+      "cordova-plugin-app-version": {},
+      "cordova-plugin-bluetooth-serial": {}
     },
     "platforms": [
       "android"

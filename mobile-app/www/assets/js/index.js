@@ -6,8 +6,8 @@
 // let basePath = cordova.file.externalRootDirectory + "Documents/"
 
 import {
-  nfcTest, networkTest, listenDevices, getConfigFromFile, launchRender, checkPinCode,
-  getPinCode, activeSpinner, getUrlServerFromPinCode, deleteServer, goLaboutik
+  nfcTest, networkTest, bluetoothTest, listenDevices, getConfigFromFile, launchRender,
+  checkPinCode, getPinCode, activeSpinner, getUrlServerFromPinCode, deleteServer, goLaboutik
 } from './modules/machineActions.js'
 
 const state = {
@@ -25,14 +25,15 @@ const state = {
   errorValuePinCode: '',
   devices: [
     { name: 'network', status: 'off', permission: 'INTERNET' },
-    { name: 'nfc', status: 'off', permission: 'NFC' }
+    { name: 'nfc', status: 'off', permission: 'NFC' },
+    { name: 'bluetooth', status: 'off', permission: ['BLUETOOTH_CONNECT', 'BLUETOOTH_SCAN'] }
   ]
 }
 
 const machine = {
   INIT: {
     fromStep: 'IDLE',
-    actions: ['listenDevices', 'networkTest', 'nfcTest']
+    actions: ['listenDevices', 'networkTest', 'nfcTest', 'bluetoothTest']
   },
   ALL_DEVICES_ON: {
     fromStep: 'INIT',
@@ -74,6 +75,7 @@ const machine = {
     listenDevices,
     networkTest,
     nfcTest,
+    bluetoothTest,
     getConfigFromFile,
     launchRender,
     getPinCode,
