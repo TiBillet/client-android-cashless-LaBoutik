@@ -2,7 +2,7 @@
 import { render } from './templateRender.js'
 import { env } from '../../../env.js'
 
-window.log = function (typeMsg, msg, state) {
+function log(typeMsg, msg, state) {
   // console.log('-> log, typeMsg =', typeMsg, '  --  msg =', msg)
   state.logs.push({ typeMsg, msg })
   render(state)
@@ -153,6 +153,8 @@ export function bluetoothTest(state) {
         // status on
         state.devices.find(device => device.name === 'bluetooth').status = 'on'
         // message send
+        // afficher info : autoriser "appareils à proximité" pour l'application
+        log('danger', 'Attention: allow "nearby devices" for the application', state)
         document.dispatchEvent(netDevice)
       },
       function () {
@@ -165,7 +167,7 @@ export function bluetoothTest(state) {
     )
   } catch (error) {
     console.log("bluetoothSerial.enable, ", error)
-    log('error', 'bluetooth: ' + error, 'danger')
+    log('error', 'bluetooth: ' + error, state)
     // message network off
     detail.status = 'off'
     document.dispatchEvent(netDevice)
@@ -199,7 +201,7 @@ export function networkTest(state) {
       document.dispatchEvent(netDevice)
     }, function (erreur) {
       // 3-5G erreur
-      log('error', 'network: ' + erreur, 'danger')
+      log('error', 'network: ' + erreur, state)
       state.ip = '127.0.0.1'
       // status off
       state.devices.find(device => device.name === 'network').status = 'off'

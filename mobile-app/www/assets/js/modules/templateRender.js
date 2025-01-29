@@ -157,12 +157,17 @@ function showInfos(state) {
   <div class="log-msg bar-bottom" style="color:var(--info-color);">uuid = ${device.uuid}</div>`
 }
 
-function showLOgs(state) {
-  // console.log('-> showLOgs, state.logs =', state.logs);
+window.showLOgs = function (state) {
+  // console.log('-> showLOgs, state.logs =', state.logs)
   let content = ""
-  for (let i = state.logs.length - 1; i > 0; i--) {
+  for (let i = state.logs.length - 1; i >= 0; i--) {
+    // repère le premier log
+    let rep = ''
+    if (i === (state.logs.length - 1)) {
+      rep =' id="first-log" '
+    }
     const item = state.logs[i]
-    content += `<div class="log-msg" style="color:var(--${item.typeMsg}-color);">${item.msg}</div>`
+    content += `<div ${rep} class="log-msg" style="color:var(--${item.typeMsg}-color);">${item.msg}</div>`
   }
   return content
 }
@@ -221,7 +226,7 @@ function showNoNetwork(state) {
 
 export const render = function (state) {
   // console.log('id =', state.idApp);
-  // console.log('state =', state);
+  console.log('state =', state)
   const template = `<section id="app-header" class="BF-col">
     <!-- show spinner -->
     ${showSpinner(state)}
@@ -256,6 +261,9 @@ export const render = function (state) {
   // logs led
   const lastLog = (state.logs.length) - 1
   if (lastLog >= 0) {
+    // led/témoin
     document.querySelector('#logs-led').style.background = bgColors[state.logs[lastLog].typeMsg]
+    // scroll premier log
+    document.querySelector('#first-log').scrollIntoView()
   }
 }
