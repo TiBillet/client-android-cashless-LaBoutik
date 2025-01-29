@@ -149,7 +149,7 @@ export function bluetoothTest(state) {
   try {
     bluetoothSerial.isEnabled(
       function () {
-        console.log("Bluetooth is enabled")
+        // console.log("Bluetooth is enabled")
         // status on
         state.devices.find(device => device.name === 'bluetooth').status = 'on'
         // message send
@@ -356,7 +356,7 @@ export async function getUrlServerFromPinCode(state) {
     })
     const retour = await response.json()
     disableSpinner(state)
-    console.log('-> getUrlServerFromPinCode, retour =', retour)
+    // console.log('-> getUrlServerFromPinCode, retour =', retour)
     if (response.status === 200) {
       const retourUpdate = await updateConfigurationFile({ retour, pinCode, hostname, username }, state)
       // console.log('retourUpdate =', retourUpdate)
