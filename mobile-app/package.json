@@ -24,8 +24,5 @@
     "platforms": [
       "android"
     ]
-  },
-  "dependencies": {
-    "cordova-plugin-sunmi-inner-printer-sunmi-v2": "^1.0.3"
   }
 }

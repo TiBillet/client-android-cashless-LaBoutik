@@ -143,10 +143,9 @@ function listenNfcAndShow() {
   })
 }
 
-// bluetooth actif ?
+// bluetooth actif ? uniquement pour SUNMI
 export function bluetoothTest(state) {
   let netDevice = new CustomEvent('msg_device', {})
-
   try {
     bluetoothSerial.isEnabled(
       function () {
@@ -255,6 +254,7 @@ export async function listenDevices(state) {
   // wait devices on
   document.addEventListener('msg_device', async () => {
     let allDevicesOn = true
+
     state.devices.forEach(device => {
       // détermine allDevicesOn
       if (device.status === 'off') {

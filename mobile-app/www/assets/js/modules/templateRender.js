@@ -235,7 +235,6 @@ export const render = function (state) {
     ${showListServer(state)}
     <!-- enter pin code --> 
     ${getPinCode(state)}
-
   </section>
   <section id="app-infos-container">
     <div id="logs-led"></div>

@@ -1,5 +1,6 @@
 /* sources:
-  nfc - https://github.com/nerdy-harry/phonegap-nfc-api31?tab=readme-ov-file#nfcshowsettings
+  nfc       - https://github.com/nerdy-harry/phonegap-nfc-api31?tab=readme-ov-file#nfcshowsettings
+  bluetooth - https://github.com/don/BluetoothSerial?tab=readme-ov-file
 */
 
 /* eslint-disable no-undef */
@@ -10,86 +11,10 @@ import {
   checkPinCode, getPinCode, activeSpinner, getUrlServerFromPinCode, deleteServer, goLaboutik
 } from './modules/machineActions.js'
 
-const state = {
-  idApp: '#app',
-  currentStep: 'IDLE',
-  saveFileName: 'configLaboutik.json',
-  urlLogin: 'wv/login_hardware',
-  logs: [],
-  ip: null,
-  basePath: null,
-  configuration: {},
-  spinner: false,
-  pinCode: '',
-  selectionServer: '',
-  errorValuePinCode: '',
-  devices: [
-    { name: 'network', status: 'off', permission: 'INTERNET' },
-    { name: 'nfc', status: 'off', permission: 'NFC' },
-    { name: 'bluetooth', status: 'off', permission: ['BLUETOOTH_CONNECT', 'BLUETOOTH_SCAN'] }
-  ]
-}
-
-const machine = {
-  INIT: {
-    fromStep: 'IDLE',
-    actions: ['listenDevices', 'networkTest', 'nfcTest', 'bluetoothTest']
-  },
-  ALL_DEVICES_ON: {
-    fromStep: 'INIT',
-    actions: 'getConfigFromFile',
-  },
-  LIST_SERVERS: {
-    fromStep: ['ALL_DEVICES_ON', 'GET_SERVER_FROM_PIN_CODE', 'GET_PIN_CODE', 'CONFIRM_DELETE_SERVER', 'DELETE_SERVER', 'NO_NETWORK'],
-    actions: 'launchRender'
-  },
-  GET_PIN_CODE: {
-    fromStep: ['LIST_SERVERS', 'CHECK_PIN_CODE', 'GET_SERVER_FROM_PIN_CODE'],
-    actions: 'getPinCode'
-  },
-  CHECK_PIN_CODE: {
-    fromStep: 'GET_PIN_CODE',
-    actions: 'checkPinCode'
-  },
-  GET_SERVER_FROM_PIN_CODE: {
-    fromStep: 'CHECK_PIN_CODE',
-    actions: ['activeSpinner', 'getUrlServerFromPinCode']
-  },
-  GO_SERVER: {
-    fromStep: 'LIST_SERVERS',
-    actions: 'goLaboutik'
-  },
-  NO_NETWORK: {
-    fromStep: 'GO_SERVER',
-    actions: 'launchRender'
-  },
-  CONFIRM_DELETE_SERVER: {
-    fromStep: 'LIST_SERVERS',
-    actions: 'launchRender'
-  },
-  DELETE_SERVER: {
-    fromStep: ['CONFIRM_DELETE_SERVER'],
-    actions: 'deleteServer'
-  },
-  actions: {
-    listenDevices,
-    networkTest,
-    nfcTest,
-    bluetoothTest,
-    getConfigFromFile,
-    launchRender,
-    getPinCode,
-    checkPinCode,
-    activeSpinner,
-    getUrlServerFromPinCode,
-    deleteServer,
-    goLaboutik
-  }
-}
 
 // manage steps
 class ManageSteps {
-  constructor() {
+  constructor(state, machine) {
     this.state = state
     this.steps = machine
   }
@@ -150,9 +75,97 @@ class ManageSteps {
  * wait cordova (devices activation)
  */
 document.addEventListener('deviceready', async () => {
+  const state = {
+    idApp: '#app',
+    currentStep: 'IDLE',
+    saveFileName: 'configLaboutik.json',
+    urlLogin: 'wv/login_hardware',
+    logs: [],
+    ip: null,
+    basePath: null,
+    configuration: {},
+    spinner: false,
+    pinCode: '',
+    selectionServer: '',
+    errorValuePinCode: '',
+    devices: [
+      { name: 'network', status: 'off', permission: 'INTERNET' },
+      { name: 'nfc', status: 'off', permission: 'NFC' },
+    ]
+  }
+
   // Persistent and private data storage within the application's sandbox using internal memory
   state.basePath = cordova.file.dataDirectory
 
-  window.ma = new ManageSteps()
+  // devices can print
+  const deviceListCanPrint = ['SUNMI']
+  let dynamicActions = ['listenDevices', 'networkTest', 'nfcTest']
+  console.log('device.manufacturer =', device.manufacturer);
+
+  // add device
+  if (deviceListCanPrint.includes(device.manufacturer) === true) {
+    dynamicActions.push('bluetoothTest')
+    state.devices.push({ name: 'bluetooth', status: 'off', permission: ['BLUETOOTH_CONNECT', 'BLUETOOTH_SCAN'] })
+  }
+  // console.log('dynamicActions =', dynamicActions)
+
+  const machine = {
+    INIT: {
+      fromStep: 'IDLE',
+      actions: dynamicActions
+    },
+    ALL_DEVICES_ON: {
+      fromStep: 'INIT',
+      actions: 'getConfigFromFile',
+    },
+    LIST_SERVERS: {
+      fromStep: ['ALL_DEVICES_ON', 'GET_SERVER_FROM_PIN_CODE', 'GET_PIN_CODE', 'CONFIRM_DELETE_SERVER', 'DELETE_SERVER', 'NO_NETWORK'],
+      actions: 'launchRender'
+    },
+    GET_PIN_CODE: {
+      fromStep: ['LIST_SERVERS', 'CHECK_PIN_CODE', 'GET_SERVER_FROM_PIN_CODE'],
+      actions: 'getPinCode'
+    },
+    CHECK_PIN_CODE: {
+      fromStep: 'GET_PIN_CODE',
+      actions: 'checkPinCode'
+    },
+    GET_SERVER_FROM_PIN_CODE: {
+      fromStep: 'CHECK_PIN_CODE',
+      actions: ['activeSpinner', 'getUrlServerFromPinCode']
+    },
+    GO_SERVER: {
+      fromStep: 'LIST_SERVERS',
+      actions: 'goLaboutik'
+    },
+    NO_NETWORK: {
+      fromStep: 'GO_SERVER',
+      actions: 'launchRender'
+    },
+    CONFIRM_DELETE_SERVER: {
+      fromStep: 'LIST_SERVERS',
+      actions: 'launchRender'
+    },
+    DELETE_SERVER: {
+      fromStep: ['CONFIRM_DELETE_SERVER'],
+      actions: 'deleteServer'
+    },
+    actions: {
+      listenDevices,
+      networkTest,
+      nfcTest,
+      bluetoothTest,
+      getConfigFromFile,
+      launchRender,
+      getPinCode,
+      checkPinCode,
+      activeSpinner,
+      getUrlServerFromPinCode,
+      deleteServer,
+      goLaboutik
+    }
+  }
+
+  window.ma = new ManageSteps(state, machine)
   ma.run('INIT')
 }, false)
