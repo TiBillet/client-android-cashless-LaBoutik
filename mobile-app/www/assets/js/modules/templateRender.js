@@ -226,7 +226,7 @@ function showNoNetwork(state) {
 
 export const render = function (state) {
   // console.log('id =', state.idApp);
-  console.log('state =', state)
+  // console.log('state =', state)
   const template = `<section id="app-header" class="BF-col">
     <!-- show spinner -->
     ${showSpinner(state)}
