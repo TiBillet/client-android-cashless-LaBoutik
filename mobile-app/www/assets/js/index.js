@@ -11,6 +11,28 @@ import {
   checkPinCode, getPinCode, activeSpinner, getUrlServerFromPinCode, deleteServer, goLaboutik
 } from './modules/machineActions.js'
 
+const state = {
+  idApp: '#app',
+  currentStep: 'IDLE',
+  saveFileName: 'configLaboutik.json',
+  urlLogin: 'wv/login_hardware',
+  logs: [],
+  ip: null,
+  basePath: null,
+  configuration: {},
+  spinner: false,
+  pinCode: '',
+  selectionServer: '',
+  errorValuePinCode: '',
+  devices: [
+    { name: 'network', status: 'off', permission: 'INTERNET' },
+    { name: 'nfc', status: 'off', permission: 'NFC' },
+  ]
+}
+// devices can print
+const deviceListCanPrint = ['SUNMI']
+let dynamicActions = ['listenDevices', 'networkTest', 'nfcTest']
+
 
 // manage steps
 class ManageSteps {
@@ -75,39 +97,14 @@ class ManageSteps {
  * wait cordova (devices activation)
  */
 document.addEventListener('deviceready', async () => {
-  const state = {
-    idApp: '#app',
-    currentStep: 'IDLE',
-    saveFileName: 'configLaboutik.json',
-    urlLogin: 'wv/login_hardware',
-    logs: [],
-    ip: null,
-    basePath: null,
-    configuration: {},
-    spinner: false,
-    pinCode: '',
-    selectionServer: '',
-    errorValuePinCode: '',
-    devices: [
-      { name: 'network', status: 'off', permission: 'INTERNET' },
-      { name: 'nfc', status: 'off', permission: 'NFC' },
-    ]
-  }
-
   // Persistent and private data storage within the application's sandbox using internal memory
   state.basePath = cordova.file.dataDirectory
-
-  // devices can print
-  const deviceListCanPrint = ['SUNMI']
-  let dynamicActions = ['listenDevices', 'networkTest', 'nfcTest']
-  console.log('device.manufacturer =', device.manufacturer);
 
   // add device
   if (deviceListCanPrint.includes(device.manufacturer) === true) {
     dynamicActions.push('bluetoothTest')
     state.devices.push({ name: 'bluetooth', status: 'off', permission: ['BLUETOOTH_CONNECT', 'BLUETOOTH_SCAN'] })
   }
-  // console.log('dynamicActions =', dynamicActions)
 
   const machine = {
     INIT: {
