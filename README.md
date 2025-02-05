@@ -45,7 +45,7 @@ cordova run android
   ou   
 Supprimer votre application sur l'appareil android
 
-# Obtenir un apk signé
+## Obtenir un apk signé
 ```
 cd .../mobile-app/
 # générer une clef "TiBillet.keystore"
@@ -53,3 +53,11 @@ keytool -genkey -v -keystore myNameKeystore.keystore -alias myNameKeystore -keya
 # build
 cordova build android --release -- --packageType=apk --keystore=./myNameKeystore.keystore --storePassword=xxxxxxxxxx --alias=myNameKeystore --password=xxxxxxxxxx
 ```
+
+## Sunmi impression et tiroir caisse
+(à faire une fois)   
+. Appuyer longtemps sur l'icon de l'application "TiBillet LaBoutik"   
+. Sélectionner le menu "Autorisation"   
+. Sélectionner "Appareils à proximité"   
+. Sélectionner "Autoriser"   
+. sortir de "Paramètres"   
