@@ -54,7 +54,17 @@ keytool -genkey -v -keystore myNameKeystore.keystore -alias myNameKeystore -keya
 cordova build android --release -- --packageType=apk --keystore=./myNameKeystore.keystore --storePassword=xxxxxxxxxx --alias=myNameKeystore --password=xxxxxxxxxx
 ```
 
-## Sunmi impression et tiroir caisse
+## Obtenir un apk signé _ test methode 2
+```
+cordova build android
+/usr/local/android-sdk-linux/build-tools/33.0.3/zipalign -f 4 /mobile-app/platforms/android/app/build/outputs/apk/debug/app-debug.apk aligned.apk
+apksigner sign --ks TiBillet.keystore --ks-pass pass:<store pass> --ks-key-alias TiBilletKeystore --key-pass pass:<key pass> --v2-signing-enabled --v1-signing-enabled aligned.apk --out release.apk
+/usr/local/android-sdk-linux/build-tools/33.0.3/apksigner sign --ks TiBillet.keystore --out release.apk aligned.apk
+
+/usr/local/android-sdk-linux/build-tools/33.0.3/apksigner verify -verbose release.apk
+```
+
+## Sunmi D3MINI impression et tiroir caisse
 (à faire une fois)   
 . Appuyer longtemps sur l'icon de l'application "TiBillet LaBoutik"   
 . Sélectionner le menu "Autorisation"   

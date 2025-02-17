@@ -1,6 +1,5 @@
 #!/bin/bash
 cordova platform remove android \
-&& cordova platform remove browser \
 && cordova plugin add cordova-plugin-device \
 && cordova plugin add phonegap-nfc-api31 \
 && cordova plugin add cordova-plugin-networkinterface \

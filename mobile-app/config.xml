@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="coop.tibillet.laboutik" version="0.9.25.02.05.09.46" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="coop.tibillet.laboutik" android-versionCode="925" version="0.9.25.02.05.09.46" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TiBillet LaBoutik</name>
     <description>Caisse enregistreuse, cashless, monnaie locale et prise de commande. Nécessite un serveur
         TiBillet/LaBoutik : https://tibillet.coop/
@@ -15,7 +15,7 @@
     <splash src="res/screen/android/splash-512x512.png" />
     <platform name="android">
         <preference name="fullscreen" value="true" />
-        <preference name="android-minSdkVersion" value="24" />
+        <preference name="android-minSdkVersion" value="23" />
         <preference name="android-targetSdkVersion" value="33" />
         <icon density="ldpi" src="res/android/ldpi.png" />
         <icon density="mdpi" src="res/android/mdpi.png" />
@@ -42,3 +42,4 @@
         <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     </config-file>
 </widget>
+
