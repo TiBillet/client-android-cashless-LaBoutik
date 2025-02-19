@@ -64,8 +64,8 @@ apksigner verify -verbose -v --print-certs release.apk
 
 ## Attention, Sunmi impression et tiroir caisse
 (à faire une fois)   
-. Appuyer longtemps sur l'icon de l'application "TiBillet LaBoutik"   
-. Sélectionner le menu "Autorisation"   
-. Sélectionner "Appareils à proximité"   
-. Sélectionner "Autoriser"   
-. sortir de "Paramètres"   
+. Appuyer longtemps sur l'icon de l'application "TiBillet LaBoutik" et cliquer sur "infos sur l'appli"
+. Cliquer sur "Autorisation"   
+. Dans "Non autorisé", cliquer sur  "Appareils à proximité"   
+. Cliquer sur "Autoriser"   
+
