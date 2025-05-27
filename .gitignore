@@ -39,3 +39,4 @@ node_modules/
 # clef signature build adroid
 build.json
 TiBillet.keystore
+mobile-app/package-lock.json
