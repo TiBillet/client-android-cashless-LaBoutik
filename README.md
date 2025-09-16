@@ -70,6 +70,29 @@ apksigner sign --ks <myNameKeystore.keystore> --ks-pass pass:<passKeystore> --ks
 apksigner verify -verbose -v --print-certs release.apk
 ```
 
+## Debug par wifi
+- Activer les options dévelopeur
+- Dans options dévelopeur, activer le débugage sans fil
+- Sélectionner le menu "Associer l'appareil avec un code d'association" ou équivalant suivant mobile :   
+Les infos ip, port et code d'association s'afficheront
+- Associer votre mobile et l'ordi avec la commande: 
+```
+adb pair <ip donné>:< port donné>
+```
+- Entrer le code d'association   
+  retour : Successfully paired to .....
+
+- Vérifier l'association:
+```
+adb devices
+```
+
+- Connecter votre ordi au mobile si perte de connexion avec la commande:
+  Attention l'ip et le port pour la connexion au mobile sont affiché dans la page de débugage sans fil. Ne pas utiliser l'ip et le port d'association.
+```
+adb connect <ip>: < donné>
+```
+
 ## Attention, pour Sunmi(impression et tiroir caisse)
 (à faire après une installation)   
 . Appuyer longtemps sur l'icon de l'application "TiBillet LaBoutik" et cliquer sur "infos sur l'appli"
