@@ -40,20 +40,28 @@ cordova run android
 - Si erreur de signature
 ```
   adb uninstall coop.tibillet.laboutik
-  cordova run android
+  cordova run androidls
 ```
   ou   
 Supprimer votre application sur l'appareil android
 
-## Obtenir un apk signé
+## Obtenir un apk de debug
+```
+cd .../mobile-app/
+
+# build
+cordova build android
+```
+
+## Obtenir un apk de production signé
 ```
 cd .../mobile-app/
 
 # générer une clef "myNameKeystore.keystore"
 keytool -genkey -v -keystore <myNameKeystore.keystore> -alias <myNameKeystore> -keyalg RSA -keysize 2048 -validity 10000
 
-# build
-cordova build android
+# build release unsigned
+cordova build android --release -- --packageType=apk
 
 # signer
 apksigner sign --ks <myNameKeystore.keystore> --ks-pass pass:<passKeystore> --ks-key-alias <myNameKeystore> --v2-signing-enabled true  --v1-signing-enabled true --in /mobile-app/platforms/android/app/build/outputs/apk/debug/app-debug.apk  --out release.apk
